@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.mysite.sbb.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
@@ -27,6 +30,14 @@ public class QuestionService {
 		} else {
 			throw new DataNotFoundException("question is not found");
 		}
+	}
+	
+	public void create(String subject, String content) {
+		Question q = new Question();
+		q.setSubject(subject);
+		q.setContent(content);
+		q.setCreateDate(LocalDateTime.now());
+		this.questionRepository.save(q);
 	}
 	
 
