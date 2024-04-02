@@ -11,7 +11,12 @@
 <title>Hello, sbb!</title>
 </head>
 <body>
+<!--내비게이션바-->
+<nav th:replace = "~{navbar :: navbarFragment}"></nav>
 <!--기본 템플릿 안에 삽입될 내용-->
 <th:block layout:fragment="content"></th:block>
+<!--end-->
+<!--bootstrap js-->
+<script th:src="@{/bootstrap.min.js}"></script>
 </body>
 </html>
