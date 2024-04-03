@@ -4,6 +4,7 @@ import java.util.List;
 
 
 
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
@@ -18,6 +19,9 @@ import org.springframework.validation.BindingResult;
 
 import com.mysite.sbb.answer.AnswerForm;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/question")
@@ -26,11 +30,13 @@ public class QuestionController {
 	private final QuestionService questionService;
 	
 	@GetMapping("/list")
-	public String list(Model model) {
+	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page) {
 		//List<Question> questionList = this.questionRepository.findAll();
-		List<Question> questionList = this.questionService.getList();
+		//List<Question> questionList = this.questionService.getList();
+		
+		Page<Question> paging = this.questionService.getList(page);
 		//name,value
-		model.addAttribute("questionList",questionList);
+		model.addAttribute("paging",paging);
 		//이제 이 model 객체를 템플릿에서 활용한다.
 		//파일명
 		return "question_list";
