@@ -1,9 +1,11 @@
 package com.mysite.sbb.question;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,4 +41,7 @@ public class Question {
 	//CascadeType : 영속성 전이. 부모 엔티티가 영속화될 때 자식 엔티티도 같이 영속화되고, 부모 엔티티가 삭제될 때 자식 엔티티도 삭제됨.
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
 	private List<Answer> answerList;
+	
+	@ManyToOne
+	private SiteUser author;
 }

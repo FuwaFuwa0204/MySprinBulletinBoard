@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,10 +45,11 @@ public class QuestionService {
 		}
 	}
 	
-	public void create(String subject, String content) {
+	public void create(String subject, String content, SiteUser user) {
 		Question q = new Question();
 		q.setSubject(subject);
 		q.setContent(content);
+		q.setAuthor(user);
 		q.setCreateDate(LocalDateTime.now());
 		this.questionRepository.save(q);
 	}

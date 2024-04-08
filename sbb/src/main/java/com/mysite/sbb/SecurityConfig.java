@@ -3,6 +3,7 @@ package com.mysite.sbb;
 import org.springframework.context.annotation.Bean;
 
 
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,14 +14,15 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 //스프링의 환경설정 파일
 @Configuration
 //모든 요청 url이 스프링 시큐리티의 제어를 받도록
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	@Bean
 	//이 클래스로 모든 요청 url에 필터 작용을 시켜 url별로 특별 설정을 할 수 있게 된다.
