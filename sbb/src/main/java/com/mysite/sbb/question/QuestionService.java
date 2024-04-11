@@ -65,5 +65,11 @@ public class QuestionService {
 		this.questionRepository.delete(question);
 	}
 	
+	//추천인을 voter에 저장하고 size를 부르면 개수가 나온다.
+	public void vote(Question question, SiteUser siteUser) {
+		question.getVoter().add(siteUser);
+		this.questionRepository.save(question);
+	}
+	
 
 }

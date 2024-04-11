@@ -46,9 +46,9 @@ public class AnswerController {
 			return "question_detail";
 		}
 		
-		this.answerService.create(question, answerForm.getContent(),siteUser);
+		Answer answer = this.answerService.create(question, answerForm.getContent(),siteUser);
 		//리다이렉트
-		return String.format("redirect:/question/detail/%s", id);
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -77,7 +77,7 @@ public class AnswerController {
 		}
 		this.answerService.modify(answer, answerForm.getContent());
 		answerForm.setContent(answer.getContent());
-		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -89,6 +89,15 @@ public class AnswerController {
 		}
 		this.answerService.delete(answer);
 		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/vote/{id}")
+	public String answerVote(Principal principal,@PathVariable("id") Integer id) {
+		Answer answer = this.answerService.getAnswer(id);
+		SiteUser siteUser = this.userService.getUser(principal.getName());
+		this.answerService.vote(answer, siteUser);
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
 
 }
