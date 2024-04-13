@@ -35,13 +35,12 @@ public class QuestionController {
 	private final UserService userService;
 	
 	@GetMapping("/list")
-	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page) {
-		//List<Question> questionList = this.questionRepository.findAll();
+	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
 		//List<Question> questionList = this.questionService.getList();
-		
-		Page<Question> paging = this.questionService.getList(page);
+		Page<Question> paging = this.questionService.getList(page, kw);
 		//name,value
 		model.addAttribute("paging",paging);
+		model.addAttribute("kw",kw);
 		//이제 이 model 객체를 템플릿에서 활용한다.
 		//파일명
 		return "question_list";
