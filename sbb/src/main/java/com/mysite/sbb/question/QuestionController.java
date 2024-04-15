@@ -58,6 +58,8 @@ public class QuestionController {
 	public String questionCreate(QuestionForm questionForm) {
 		return "question_form";
 	}
+	
+	
 	@PreAuthorize("isAuthenticated()")
 	//질문등록용
 	@PostMapping("/create")

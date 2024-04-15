@@ -33,6 +33,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
+
 	
 	private Specification<Question> search(String kw){
 		return new Specification<>() {
@@ -52,7 +53,7 @@ public class QuestionService {
 			}
 		};
 	}
-	
+
 	
 /*public List<Question> getList(){
 		return questionRepository.findAll();
@@ -63,7 +64,7 @@ public class QuestionService {
 		sorts.add(Sort.Order.desc("createDate"));
 		Pageable pageable = PageRequest.of(Page, 10, Sort.by(sorts));
 		Specification<Question> spec = search(kw);
-		return this.questionRepository.findAll(spec, pageable);
+		return this.questionRepository.findAll(spec,pageable);
 	}
 	
 	public Question getQuestion(Integer id) {
