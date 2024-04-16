@@ -65,7 +65,7 @@
 		<div class="my-3">
 			<!--추천 버튼-->
 			<a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
-			th:data-uri="@{|/answer/vote/${answer.id}/${answerPaging.number}|}">추천
+			th:data-uri="@{|/answer/vote/${answer.id}|}">추천
 			<span class="badge rounded-pill bg-success"
 			th:text="${#lists.size(answer.voter)}"></span>
 			</a>
