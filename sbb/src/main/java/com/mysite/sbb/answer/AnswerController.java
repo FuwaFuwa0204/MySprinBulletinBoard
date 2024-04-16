@@ -2,6 +2,7 @@ package com.mysite.sbb.answer;
 
 import com.mysite.sbb.question.Question;
 
+
 import com.mysite.sbb.user.UserService;
 import com.mysite.sbb.user.SiteUser;
 
@@ -25,6 +26,7 @@ import java.security.Principal;
 
 import org.springframework.web.server.ResponseStatusException;
 
+
 @RequestMapping("/answer")
 @RequiredArgsConstructor
 @Controller
@@ -34,9 +36,10 @@ public class AnswerController {
 	private final AnswerService answerService;
 	private final UserService userService;
 	
+	
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create/{id}")
-	public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
+	@PostMapping("/create/{id}/{page}")
+	public String createAnswer(Model model, @PathVariable("id") Integer id, @PathVariable("id") Integer page, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
 		
 		Question question = this.questionService.getQuestion(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
@@ -47,8 +50,9 @@ public class AnswerController {
 		}
 		
 		Answer answer = this.answerService.create(question, answerForm.getContent(),siteUser);
+		 
 		//리다이렉트
-		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
+		return String.format("redirect:/question/detail/%s?page=%s#answer_%s", answer.getQuestion().getId(), page, answer.getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -66,7 +70,7 @@ public class AnswerController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}")
-	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
+	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult, @PathVariable("id") Integer id,Principal principal) {
 		
 		if(bindingResult.hasErrors()) {
 			return "answer_form";
@@ -92,12 +96,12 @@ public class AnswerController {
 	}
 	
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/vote/{id}")
-	public String answerVote(Principal principal,@PathVariable("id") Integer id) {
+	@GetMapping("/vote/{id}/{page}")
+	public String answerVote(Principal principal,@PathVariable("id") Integer id, @PathVariable("page") int page) {
 		Answer answer = this.answerService.getAnswer(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
 		this.answerService.vote(answer, siteUser);
-		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
+		return String.format("redirect:/question/detail/%s?page=%s#answer_%s", answer.getQuestion().getId(), page, answer.getId());
 	}
 
 }

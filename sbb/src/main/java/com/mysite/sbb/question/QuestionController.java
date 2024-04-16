@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.answer.Answer;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/question")
@@ -33,6 +37,7 @@ public class QuestionController {
 	
 	private final QuestionService questionService;
 	private final UserService userService;
+	private final AnswerService answerService;
 	
 	@GetMapping("/list")
 	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
@@ -45,10 +50,14 @@ public class QuestionController {
 		//파일명
 		return "question_list";
 	}
+	//댓글 페이징 부분
 	@GetMapping(value= "/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
+	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value="answerPage", defaultValue="0") int answerPage) {
+		//id로 조회한 question을 넣어준다.
 		Question question = this.questionService.getQuestion(id);
+		Page<Answer> answerPaging = this.answerService.getList(question,answerPage);
 		model.addAttribute("question",question);
+		model.addAttribute("answerPaging",answerPaging);
 		return "question_detail";
 	}
 	
