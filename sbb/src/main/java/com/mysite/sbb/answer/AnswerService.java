@@ -28,7 +28,7 @@ public class AnswerService {
 	public Page<Answer> getList(Question question, int page){
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("voter"));
-		sorts.add(Sort.Order.desc("createDate"));
+		sorts.add(Sort.Order.asc("createDate"));
 		Pageable pageable = PageRequest.of(page,5, Sort.by(sorts));
 		return this.answerRepository.findByQuestion(question, pageable);
 	}

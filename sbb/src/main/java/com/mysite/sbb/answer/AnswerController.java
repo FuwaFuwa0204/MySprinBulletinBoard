@@ -38,8 +38,8 @@ public class AnswerController {
 	
 	
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create/{id}/{page}")
-	public String createAnswer(Model model, @PathVariable("id") Integer id, @PathVariable("id") Integer page, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
+	@PostMapping("/create/{id}")
+	public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
 		
 		Question question = this.questionService.getQuestion(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
@@ -52,7 +52,7 @@ public class AnswerController {
 		Answer answer = this.answerService.create(question, answerForm.getContent(),siteUser);
 		 
 		//리다이렉트
-		return String.format("redirect:/question/detail/%s?page=%s#answer_%s", answer.getQuestion().getId(), page, answer.getId());
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -101,7 +101,7 @@ public class AnswerController {
 		Answer answer = this.answerService.getAnswer(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
 		this.answerService.vote(answer, siteUser);
-		return String.format("redirect:/question/detail/%s?page=%s#answer_%s", answer.getQuestion().getId(), page, answer.getId());
+		return String.format("redirect:/question/detail/%s?answerPage=%s#answer_%s", answer.getQuestion().getId(), page, answer.getId());
 	}
 
 }
