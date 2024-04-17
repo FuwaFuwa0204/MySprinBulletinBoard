@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.question.QuestionService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
@@ -29,19 +30,21 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 	
 	private final QuestionService questionService;
+	private final AnswerService answerService;
 	private final UserService userService;
 	private final CommentService commentService;
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/create/question/{id}")
-	public String createComment(CommentForm commentForm) {
+	//GetMapping에도 CommentForm 추가해줘야한다.
+	public String createQuestionComment(CommentForm commentForm) {
 		
 		return "comment_form";
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/question/{id}")
-	public String createComment(Model model, @PathVariable("id") Integer id, @Valid CommentForm commentForm, BindingResult bindingResult, Principal principal) {
+	public String createQuestionComment(Model model, @PathVariable("id") Integer id, @Valid CommentForm commentForm, BindingResult bindingResult, Principal principal) {
 		
 		Question question = this.questionService.getQuestion(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
@@ -54,6 +57,31 @@ public class CommentController {
 		Comment comment = this.commentService.createQuestion(question,commentForm.getContent(),siteUser);
 
 		return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/create/question/{id}/{answerId}")
+	//GetMapping에도 CommentForm 추가해줘야한다.
+	public String createAnswerComment(CommentForm commentForm) {
+		
+		return "comment_form";
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@PostMapping("/create/question/{id}/{answerId}")
+	public String createAnswerComment(Model model, @PathVariable("answerId") Integer answerId, @PathVariable("id") Integer id, @Valid CommentForm commentForm, BindingResult bindingResult, Principal principal) {
+		
+		Answer answer = this.answerService.getAnswer(answerId);
+		SiteUser siteUser = this.userService.getUser(principal.getName());
+		
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("answer",answer);
+			return "comment_form";
+		}
+		
+		Comment comment = this.commentService.createAnswer(answer,commentForm.getContent(),siteUser);
+
+		return String.format("redirect:/question/detail/%s#answer%s", comment.getAnswer().getQuestion().getId(), comment.getAnswer().getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -82,7 +110,7 @@ public class CommentController {
 		}
 		this.commentService.modify(comment, commentForm.getContent());
 		commentForm.setContent(comment.getContent());
-		return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
+		return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -93,7 +121,7 @@ public class CommentController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제 권한이 없습니다.");
 		}
 		this.commentService.delete(comment);
-		return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
+		return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
 	}
 
 }
