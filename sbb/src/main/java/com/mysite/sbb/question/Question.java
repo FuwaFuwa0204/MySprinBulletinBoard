@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
@@ -44,6 +45,9 @@ public class Question {
 	//CascadeType : 영속성 전이. 부모 엔티티가 영속화될 때 자식 엔티티도 같이 영속화되고, 부모 엔티티가 삭제될 때 자식 엔티티도 삭제됨.
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
 	private List<Answer> answerList;
+	
+	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+	private List<Comment> commentList;
 	
 	@ManyToOne
 	private SiteUser author;
