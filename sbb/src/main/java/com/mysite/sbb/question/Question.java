@@ -3,12 +3,14 @@ package com.mysite.sbb.question;
 import java.time.LocalDateTime;
 
 
+
 import java.util.List;
 import java.util.Set;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.category.Category;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -56,4 +58,7 @@ public class Question {
 	
 	@ManyToMany
 	Set<SiteUser> voter;
+	
+	@ManyToOne
+	private Category category;
 }

@@ -7,6 +7,12 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               	<li>
+					<a class="nav-link" th:href="@{/question/list/qna}">질문 게시판</a>
+				</li>
+				 <li>
+					<a class="nav-link" th:href="@{/question/list/free}">자유 게시판</a>
+				</li>
 				<li class="nav-item">
 					<!--페이지전환 x-->
 					<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
