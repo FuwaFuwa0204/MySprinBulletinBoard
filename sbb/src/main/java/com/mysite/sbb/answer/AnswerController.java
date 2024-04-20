@@ -2,6 +2,7 @@ package com.mysite.sbb.answer;
 
 import com.mysite.sbb.question.Question;
 
+
 import com.mysite.sbb.user.UserService;
 import com.mysite.sbb.user.SiteUser;
 
@@ -25,6 +26,7 @@ import java.security.Principal;
 
 import org.springframework.web.server.ResponseStatusException;
 
+
 @RequestMapping("/answer")
 @RequiredArgsConstructor
 @Controller
@@ -33,6 +35,7 @@ public class AnswerController {
 	private final QuestionService questionService;
 	private final AnswerService answerService;
 	private final UserService userService;
+	
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{id}")
@@ -47,6 +50,7 @@ public class AnswerController {
 		}
 		
 		Answer answer = this.answerService.create(question, answerForm.getContent(),siteUser);
+		 
 		//리다이렉트
 		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
@@ -66,7 +70,7 @@ public class AnswerController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}")
-	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
+	public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult, @PathVariable("id") Integer id,Principal principal) {
 		
 		if(bindingResult.hasErrors()) {
 			return "answer_form";
@@ -97,7 +101,7 @@ public class AnswerController {
 		Answer answer = this.answerService.getAnswer(id);
 		SiteUser siteUser = this.userService.getUser(principal.getName());
 		this.answerService.vote(answer, siteUser);
-		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId());
 	}
 
 }
