@@ -28,13 +28,15 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
 			+ "left outer join Answer a on a.question=q "
 			+ "left outer join SiteUser u2 on a.author=u2 "
 			+ "where "
+			+ "   (q.category = :category) "
+			+ "   and ( "
 			+ "   q.subject like %:kw% "
 			+ "   or q.content like %:kw% "
 			+ "   or u1.username like %:kw% "
 			+ "   or a.content like %:kw% "
-			+ "   or u2.username like %:kw% ")
+			+ "   or u2.username like %:kw%) ")
 	
-		Page<Question> findAllByKeywordAndType(@Param("kw") String kw, Pageable pageable);
+		Page<Question> findAllByKeywordAndType(@Param("kw") String kw, int category, Pageable pageable);
 
 
 }

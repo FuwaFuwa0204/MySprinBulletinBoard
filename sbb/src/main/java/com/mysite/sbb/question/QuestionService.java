@@ -69,11 +69,11 @@ public class QuestionService {
 		return this.questionRepository.findAll(spec,pageable);
 	}
 	*/
-	public Page<Question> getList(int Page, String kw){
+	public Page<Question> getList(int Page, int category, String kw){
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("createDate"));
 		Pageable pageable = PageRequest.of(Page, 10, Sort.by(sorts));
-		return this.questionRepository.findAllByKeywordAndType(kw, pageable);
+		return this.questionRepository.findAllByKeywordAndType(kw,category, pageable);
 	}
 	
 	public Question getQuestion(Integer id) {
