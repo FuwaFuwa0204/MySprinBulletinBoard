@@ -1,3 +1,4 @@
+
 package com.mysite.sbb.comment;
 
 import java.security.Principal;
@@ -110,7 +111,7 @@ public class CommentController {
 		}
 		this.commentService.modify(comment, commentForm.getContent());
 		commentForm.setContent(comment.getContent());
-		return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
+		return String.format("redirect:/question/detail/%s", comment.getQuestionId());
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -121,7 +122,7 @@ public class CommentController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제 권한이 없습니다.");
 		}
 		this.commentService.delete(comment);
-		return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
+		return String.format("redirect:/question/detail/%s", comment.getQuestionId());
 	}
 
 }
