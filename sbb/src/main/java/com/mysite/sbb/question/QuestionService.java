@@ -34,7 +34,7 @@ public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
 
-	
+/*
 	private Specification<Question> search(String kw){
 		return new Specification<>() {
 			private static final long serialVersionUID = 1L;
@@ -53,7 +53,7 @@ public class QuestionService {
 			}
 		};
 	}
-
+*/
 	
 /*public List<Question> getList(){
 		return questionRepository.findAll();
@@ -63,8 +63,8 @@ public class QuestionService {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("createDate"));
 		Pageable pageable = PageRequest.of(Page, 10, Sort.by(sorts));
-		Specification<Question> spec = search(kw);
-		return this.questionRepository.findAll(spec,pageable);
+		//Specification<Question> spec = search(kw);
+		return this.questionRepository.findAllByKeyword(kw, pageable);
 	}
 	
 	public Question getQuestion(Integer id) {
