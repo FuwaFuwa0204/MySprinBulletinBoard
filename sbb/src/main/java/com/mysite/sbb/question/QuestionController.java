@@ -29,7 +29,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.answer.AnswerService;
-import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.answer.Answer;
 
 @RequestMapping("/question")
@@ -40,16 +39,26 @@ public class QuestionController {
 	private final QuestionService questionService;
 	private final UserService userService;
 	private final AnswerService answerService;
-	private final CategoryService categoryService;
+	
+		@GetMapping("/")
+		public String root() {
+			return "redirect:/question/list/qna";
+		}
 
 
-	@GetMapping("/list")
-	public String listQna(Model model, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
+	@GetMapping("/list/{type}")
+	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw, @PathVariable String type) {
 		//List<Question> questionList = this.questionService.getList();
-		Page<Question> paging = this.questionService.getList(page, kw);
+		int category = switch(type) {
+		case "qna" -> QuestionEnum.QNA.getStatus();
+		case "free" -> QuestionEnum.FREE.getStatus();
+		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
+		};
+		Page<Question> paging = this.questionService.getList(page,category, kw);
 		//name,value
 		model.addAttribute("paging",paging);
 		model.addAttribute("kw",kw);
+		model.addAttribute("category",category);
 		//이제 이 model 객체를 템플릿에서 활용한다.
 		//파일명
 		return "question_list";

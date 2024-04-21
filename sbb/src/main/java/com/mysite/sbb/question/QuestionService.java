@@ -1,35 +1,20 @@
 package com.mysite.sbb.question;
 
 import java.time.LocalDateTime;
-
-
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.user.SiteUser;
-import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.category.Category;
 
 import lombok.RequiredArgsConstructor;
-
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
-import org.springframework.data.jpa.domain.Specification;
 
 
 @RequiredArgsConstructor
@@ -91,7 +76,6 @@ public class QuestionService {
 		q.setContent(content);
 		q.setAuthor(user);
 		q.setCreateDate(LocalDateTime.now());
-		q.setCategory(null);
 		this.questionRepository.save(q);
 	}
 	
