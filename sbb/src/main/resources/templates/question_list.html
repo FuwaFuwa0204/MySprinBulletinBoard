@@ -61,6 +61,7 @@
 		</ul>
 	</div>
 	<!-- 페이징처리 끝 -->
+	<!--카테고리별 form 생성-->
 	<form th:if="${category==0}" th:action="@{/question/list/qna}" method="get" id="searchForm">
 	    <input type="hidden" id="kw" name="kw" th:value="${kw}">
 		<input type="hidden" id="page" name="page" th:value="${paging.number}">
