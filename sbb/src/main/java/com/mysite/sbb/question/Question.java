@@ -56,4 +56,17 @@ public class Question {
 	
 	@ManyToMany
 	Set<SiteUser> voter;
+	
+	int category;
+	
+	public String getCategoryAsString() {
+		switch (this.category) {
+			case 0:
+				return "qna";
+			case 1:
+				return "free";
+			default:
+				throw new RuntimeException("올바르지 않은 접근입니다.");
+		}
+	}
 }

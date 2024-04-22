@@ -2,7 +2,10 @@
 <div layout:fragment="content" class="container my-3">
 	<div class = "row my-3">
 		<div class="col-6">
-			<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+			   <a th:href="@{/question/create/qna}" class="btn btn-primary"
+                   th:if="${category == 0}">질문과답변 등록</a>
+                <a th:href="@{/question/create/free}" class="btn btn-primary"
+                   th:if="${category == 1}">자유게시판 등록</a>
 		</div>
 		<div class="col-6">
 			<div class="input-group">
@@ -58,8 +61,13 @@
 		</ul>
 	</div>
 	<!-- 페이징처리 끝 -->
-	<form th:action="@{/question/list}" method="get" id="searchForm">
-		<input type="hidden" id="kw" name="kw" th:value="${kw}">
+	<form th:if="${category==0}" th:action="@{/question/list/qna}" method="get" id="searchForm">
+	    <input type="hidden" id="kw" name="kw" th:value="${kw}">
+		<input type="hidden" id="page" name="page" th:value="${paging.number}">
+	</form>
+	
+		<form th:if="${category==1}" th:action="@{/question/list/free}" method="get" id="searchForm">
+	    <input type="hidden" id="kw" name="kw" th:value="${kw}">
 		<input type="hidden" id="page" name="page" th:value="${paging.number}">
 	</form>
 </div>
@@ -73,11 +81,13 @@
 		});
 	});
 	
-	const btn_search = document.getElementById("btn_search");
+	const btn_search1 = document.getElementById("btn_search");
 	btn_search.addEventListener('click', function(){
 		document.getElementById('kw').value = document.getElementById('search_kw').value;
 		document.getElementById('searchForm').submit();	
 	});
+
+
 </script>
 
 </html>

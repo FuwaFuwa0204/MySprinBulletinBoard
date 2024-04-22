@@ -39,14 +39,21 @@ public class QuestionController {
 	private final UserService userService;
 	private final AnswerService answerService;
 	
-	@GetMapping("/list")
-	public String list(Model model, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
-		//List<Question> questionList = this.questionService.getList();
-		Page<Question> paging = this.questionService.getList(page, kw);
+	@GetMapping("/list/{type}")
+	public String list(Model model,@PathVariable String type, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
 		//name,value
+		int category = switch(type) {
+		case "qna" -> QuestionEnum.QNA.getStatus();
+		case "free" -> QuestionEnum.FREE.getStatus();
+		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
+		};
+		
+		model.addAttribute("category",category);
+		//이제 이 model 객체를 템플릿에서 활용한다.
+		Page<Question> paging = this.questionService.getList(page, category, kw);
 		model.addAttribute("paging",paging);
 		model.addAttribute("kw",kw);
-		//이제 이 model 객체를 템플릿에서 활용한다.
+
 		//파일명
 		return "question_list";
 	}
@@ -63,24 +70,35 @@ public class QuestionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	//버튼용
-	@GetMapping("/create")
-	public String questionCreate(QuestionForm questionForm) {
+	@GetMapping("/create/{type}")
+	public String questionCreate(Model model,QuestionForm questionForm,@PathVariable String type) {
+		switch (type) {
+		case "qna" -> model.addAttribute("category", "질문 작성");
+		case "free" -> model.addAttribute("category", "자유게시판 작성");
+		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
+	}
 		return "question_form";
 	}
 	
 	
 	@PreAuthorize("isAuthenticated()")
 	//질문등록용
-	@PostMapping("/create")
-	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
+	@PostMapping("/create/{type}")
+	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal,@PathVariable String type) {
 		
 		SiteUser siteUser = this.userService.getUser(principal.getName());
 		
 		if(bindingResult.hasErrors()) {
 			return"question_form";
 		}
-	    this.questionService.create(questionForm.getSubject(),questionForm.getContent(), siteUser);
-		return "redirect:/question/list";
+		
+		int category = switch (type) {
+		case "qna" -> QuestionEnum.QNA.getStatus();
+		case "free" -> QuestionEnum.FREE.getStatus();
+		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
+	};
+	    this.questionService.create(questionForm.getSubject(),questionForm.getContent(), siteUser, category);
+		return "redirect:/question/list/%s".formatted(type);
 	}
 	
 	@PreAuthorize("isAuthenticated()")
