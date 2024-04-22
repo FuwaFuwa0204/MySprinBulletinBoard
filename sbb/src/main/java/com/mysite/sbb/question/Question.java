@@ -3,14 +3,12 @@ package com.mysite.sbb.question;
 import java.time.LocalDateTime;
 
 
-
 import java.util.List;
 import java.util.Set;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.user.SiteUser;
-import com.mysite.sbb.category.Category;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -59,6 +57,16 @@ public class Question {
 	@ManyToMany
 	Set<SiteUser> voter;
 	
-	@ManyToOne
-	private Category category;
+	int category;
+	
+	public String getCategoryAsString() {
+		switch (this.category) {
+			case 0:
+				return "qna";
+			case 1:
+				return "free";
+			default:
+				throw new RuntimeException("올바르지 않은 접근입니다.");
+		}
+	}
 }
