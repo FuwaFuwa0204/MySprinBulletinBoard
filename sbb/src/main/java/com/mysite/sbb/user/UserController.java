@@ -2,10 +2,14 @@ package com.mysite.sbb.user;
 
 import org.springframework.stereotype.Controller;
 
+
+
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mysite.sbb.DataNotFoundException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +56,29 @@ public class UserController {
 	@GetMapping("/login")
 	public String login() {
 		return "login_form";
+	}
+	
+	@GetMapping("/findpassword")
+	public String sendTmpPassword(tmpPasswordForm tmpPasswordForm) {
+		return "findpasswordForm";
+	}
+	
+	@PostMapping("/findpassword")
+	public String sendTmpPassword(@Valid tmpPasswordForm tmpPasswordForm, BindingResult bindingResult){
+		if(bindingResult.hasErrors()) {
+			return "findpasswordForm";
+		}
+        try {
+        	userService.modifyPassword(tmpPasswordForm.getEmail());
+        }catch(DataNotFoundException e) {
+        	e.printStackTrace();
+        	bindingResult.reject("emailNotFound", e.getMessage());
+        	return "findpasswordForm";
+        } catch(EmailException e) {
+            bindingResult.reject("sendEmailFail", e.getMessage());
+            return "findpasswordForm";
+        }
+        return "redirect:/";
 	}
 
 }
