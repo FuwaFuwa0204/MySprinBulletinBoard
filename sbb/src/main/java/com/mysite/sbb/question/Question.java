@@ -58,5 +58,4 @@ public class Question {
 	Set<SiteUser> voter;
 	
 	int category;
-	
-}
+
