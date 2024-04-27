@@ -1,9 +1,10 @@
 package com.mysite.sbb.comment;
 
 import java.time.LocalDateTime;
-
 import java.util.Optional;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
@@ -59,5 +60,10 @@ public class CommentService {
 	public void delete(Comment comment) {
 		this.commentRepository.delete(comment);
 	}
+	
+	public List<Comment> findCommentList(int num, String username) {
+		Pageable pageable = PageRequest.of(0, num);
+		return this.commentRepository.findCommentList(username, pageable);
 
+}
 }

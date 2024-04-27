@@ -39,6 +39,11 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
     		+ "   )")
     Page<Question> findAllByKeyword(@Param("kw") String kw, @Param("category") int category, Pageable pageable);
  	
+    @Query("select q "
+    	+ "from Question q "
+    	+ "join SiteUser u on q.author=u "
+    	+ "where u.username = :username ")
+    List<Question> findQuestionList(@Param("username") String username, Pageable pageable);
 
 
 }

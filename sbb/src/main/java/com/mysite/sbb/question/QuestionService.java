@@ -19,6 +19,7 @@ import com.mysite.sbb.answer.Answer;
 
 import lombok.RequiredArgsConstructor;
 
+/*
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -26,7 +27,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
-
+*/
 
 @RequiredArgsConstructor
 @Service
@@ -101,6 +102,11 @@ public class QuestionService {
 	public void vote(Question question, SiteUser siteUser) {
 		question.getVoter().add(siteUser);
 		this.questionRepository.save(question);
+	}
+	
+	public List<Question> findQuestionList(int num, String username) {
+		Pageable pageable = PageRequest.of(0, num);
+		return this.questionRepository.findQuestionList(username, pageable);
 	}
 	
 

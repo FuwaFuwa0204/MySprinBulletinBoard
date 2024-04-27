@@ -67,4 +67,9 @@ public class AnswerService {
 		answer.getVoter().add(siteUser);
 		this.answerRepository.save(answer);
 	}
+	
+	public List<Answer> findAnswerList(int num, String username) {
+		Pageable pageable = PageRequest.of(0, num);
+		return this.answerRepository.findAnswerList(username, pageable);
+}
 }
