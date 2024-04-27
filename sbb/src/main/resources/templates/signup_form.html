@@ -8,7 +8,7 @@
 		<form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post">
 			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
 			<div class = "mb-3">
-				<labbel for="username" class="form-label">사용자 ID</labbel>
+				<label for="username" class="form-label">사용자 ID</label>
 				<input type="text" th:field="*{username}" class="form-control">
 			</div>
 			<div class="mb-3">

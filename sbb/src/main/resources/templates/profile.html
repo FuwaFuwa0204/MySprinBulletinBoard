@@ -1,0 +1,59 @@
+<html layout:decorate="~{layout}">
+	<div layout:fragment="content" class="container my-3">
+		<h1 class="mb-5">My Page</h1>
+		<section class="mb-3">
+			<div class="row">
+			<h4 "border-bottom-dark">내 정보</h4>
+			<p>내 이름 : <span th:text="${username}"></span></p>
+			<p>내 이메일 : <span th:text="${userEmail}"></span></p>
+			<a th:href="@{/user/updatepassword}" class="btn btn-primary">비밀번호를 바꾸고 싶어요</a>			
+			</div>
+		</section>
+		<section class="mb-3">
+			<h4 "border-bottom-dark">내가 쓴 질문</h4>
+			<div class="card py-3 px-3">
+				<th:block th:each="question: ${userQuestion}">
+					<div class="row">
+						<div class="col-sm-3">
+						<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+						</div>
+						<div class="col-sm-9">
+							<p th:text ="${question.createDate}"></p>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</section>
+		<section class="mb-3">
+			<h4 "border-bottom-dark">내가 쓴 답변</h4>
+				<div class="card py-3 px-3">
+				<th:block th:each="answer: ${userAnswer}">
+					<div class="row">
+						<div class="col-sm-3">
+						<a th:href="@{|/question/detail/${answer.question.id}|}" th:text="${answer.content}"></a>
+						</div>
+						<div class="col-sm-9">
+							<p th:text ="${answer.createDate}"></p>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</section>
+		<section class="mb-3">
+			<h4 "border-bottom-dark">내가 쓴 댓글</h4>
+				<div class="card py-3 px-3">
+				<th:block th:each="comment: ${userComment}">
+					<div class="row">
+						<div class="col-sm-3">
+						<a th:href="@{|/question/detail/${comment.question.id}|}" th:text="${comment.content}"></a>
+						</div>
+						<div class="col-sm-9">
+							<p th:text ="${comment.createDate}"></p>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</section>
+
+	</div>
+</html>

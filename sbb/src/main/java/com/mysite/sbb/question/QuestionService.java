@@ -104,5 +104,10 @@ public class QuestionService {
 		this.questionRepository.save(question);
 	}
 	
+	public List<Question> findQuestionList(int num, String username) {
+		Pageable pageable = PageRequest.of(0, num);
+		return this.questionRepository.findQuestionList(username, pageable);
+	}
+	
 
 }

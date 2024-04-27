@@ -49,10 +49,20 @@ public class UserService {
 	public void modifyPassword(String email) throws EmailException{
 		
 		String password = commonUtil.createTmpPassword();
-		SiteUser user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("해당 이메일의 유저가 없습니다."));
+		SiteUser user = userRepository.findByEmail(email);
+	    //orElseThrow(() -> new DataNotFoundException("해당 이메일의 유저가 없습니다."));
 		user.setPassword(passwordEncoder.encode(password));
 		userRepository.save(user);
 		sendingEmailService.sendMessage(email,password);
 	}
+	
+	
+	public void updatePassword(String password1, String password2, String email) {
+		SiteUser siteUser = this.userRepository.findByEmail(email);
+		siteUser.setPassword(passwordEncoder.encode(password2));
+		this.userRepository.save(siteUser);
+	}
+	
+	
 
 }
