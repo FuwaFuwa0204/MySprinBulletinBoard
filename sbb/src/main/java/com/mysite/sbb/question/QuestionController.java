@@ -61,6 +61,7 @@ public class QuestionController {
 	@GetMapping(value= "/detail/{id}")
 	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value="answerPage", defaultValue="0") int answerPage) {
 		//id로 조회한 question을 넣어준다.
+		//detail/{id}로 들어갈때마다 getQuestion을 한다. -> 조회수 증가.
 		Question question = this.questionService.getQuestion(id);
 		Page<Answer> answerPaging = this.answerService.getList(question,answerPage);
 		model.addAttribute("question",question);

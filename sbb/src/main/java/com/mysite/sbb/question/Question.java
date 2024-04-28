@@ -58,4 +58,9 @@ public class Question {
 	Set<SiteUser> voter;
 	
 	int category;
+	
+	//기본값 설정, null 불가능.
+	@Column(columnDefinition = "integer default 0",nullable=false)
+	//조회수 추가
+	private int views;
 

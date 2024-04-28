@@ -135,7 +135,7 @@ public class UserController {
 		}
 
 		if(!passwordEncoder.matches(password1,user.getPassword())) {
-				bindingResult.rejectValue("password1","이메일이 맞지않습니다.");
+				bindingResult.rejectValue("password1","비밀번호가 맞지않습니다.");
 			}
 			
 		this.userService.updatePassword(password1,password2,email);
