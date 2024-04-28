@@ -67,11 +67,14 @@ public class QuestionService {
 		//Specification<Question> spec = search(kw);
 		return this.questionRepository.findAllByKeyword(kw, category, pageable);
 	}
-	
+	//get할때마다 조회수+1
 	public Question getQuestion(Integer id) {
 		Optional<Question> question = this.questionRepository.findById(id);
 		if (question.isPresent()) {
-			return question.get();
+			Question questionView = question.get();
+			questionView.setViews(question.get().getViews()+1);
+			this.questionRepository.save(questionView);
+			return questionView;
 		} else {
 			throw new DataNotFoundException("question is not found");
 		}

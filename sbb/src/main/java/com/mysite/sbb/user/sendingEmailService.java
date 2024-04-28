@@ -37,7 +37,7 @@ public class sendingEmailService {
 	        msg += code + "</strong><div><br/> ";
 	        msg += "</div>";
 	        message.setText(msg, "utf-8", "html");
-	        message.setFrom(new InternetAddress("발신자 메일", "sbb_Admin"));
+	        message.setFrom(new InternetAddress("발신자 이메일 주소", "sbb_Admin"));
 
 	        return message;
 		}
