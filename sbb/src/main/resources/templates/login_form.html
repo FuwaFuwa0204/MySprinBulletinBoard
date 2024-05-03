@@ -14,11 +14,20 @@
 			<label for="password" class="form-label">비밀번호</label>
 			<input type="password" name="password" id="password" class="form-control">
 		</div>
-		<div>
+
+	</form>	
+	<div>
 		<button type="submit" class="btn btn-primary">로그인</button>
 		<a th:href="@{/user/findpassword}" class="btn btn-primary">임시비밀번호 발급</a>
-		</div>
-	</form>
+		<button id="google_login">구글 소셜 로그인</button>
+	</div>
+	   
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const googleLogin = document.getElementById("google_login");
+    googleLogin.addEventListener('click', function () {
+        location.href = "/oauth2/authorization/google";
+    });
+</script>
 
 </html>
