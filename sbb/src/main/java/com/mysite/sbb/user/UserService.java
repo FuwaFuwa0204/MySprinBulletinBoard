@@ -2,8 +2,7 @@ package com.mysite.sbb.user;
 
 import java.util.Optional;
 
-
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
@@ -58,11 +57,24 @@ public class UserService {
 	
 	
 	public void updatePassword(String password1, String password2, String email) {
-		SiteUser siteUser = this.userRepository.findByEmail(email).orElseThrow();
+		SiteUser siteUser = this.userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("이메일이 존재하지 않습니다."));
 		siteUser.setPassword(passwordEncoder.encode(password2));
 		this.userRepository.save(siteUser);
 	}
 	
+	//회원탈퇴
+	@Transactional
+	public Boolean resign(String email, String password) {
+		SiteUser siteUser = this.userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("이메일이 존재하지 않습니다."));
+		
+		if(passwordEncoder.matches(password, siteUser.getPassword())) {
+			this.userRepository.delete(siteUser);
+			SecurityContextHolder.clearContext();
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 
 }

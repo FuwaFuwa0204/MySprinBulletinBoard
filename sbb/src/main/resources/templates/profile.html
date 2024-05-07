@@ -6,7 +6,9 @@
 			<h4 "border-bottom-dark">내 정보</h4>
 			<p>내 이름 : <span th:text="${username}"></span></p>
 			<p>내 이메일 : <span th:text="${userEmail}"></span></p>
-			<a th:href="@{/user/updatepassword}" class="btn btn-primary">비밀번호를 바꾸고 싶어요</a>			
+			<a th:href="@{/user/updatepassword}" class="btn btn-primary mb-3">비밀번호를 바꾸고 싶어요</a>	
+			<a th:href="@{/user/resign}" class="btn btn-primary mb-3">회원탈퇴를 하고 싶어요.</a>
+			<h5 "border-bottom-dark">*소셜 로그인으로 가입한 경우 구글 계정에서 sbb 게시판 연동 해제를 해주시면 됩니다.*</h5>		
 			</div>
 		</section>
 		<section class="mb-3">
