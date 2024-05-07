@@ -1,10 +1,10 @@
 package com.mysite.sbb.user;
 
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.comment.CommentService;
-import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionService;
 
 import jakarta.validation.Valid;
@@ -142,8 +141,30 @@ public class UserController {
 		return "redirect:/user/profile";
 	}
 	
+	@PreAuthorize("isAuthenticated()")	
+	@GetMapping("/resign")
+	public String resign(resignForm resignForm) {
+		return "resign";
+	}
 	
-	
+	@PreAuthorize("isAuthenticated()")	
+	@PostMapping("/resign")
+	public String resign(@Valid resignForm resignForm, BindingResult bindingResult, Principal principal) {
+		
+		SiteUser user = this.userService.getUser(principal.getName());
+		String email = user.getEmail();
+		//입력으로 받아들이는 건 폼 클래스에서 가져오기
+		String password = resignForm.getPassword();
+		
+		if(this.userService.resign(email,password)==true) {
+			
+			return "redirect:/user/logout";
+			
+		}else {
+			return "resign";
+		}
+		
+	}
 	
 	
 	
