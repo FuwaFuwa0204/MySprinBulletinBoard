@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,6 +35,7 @@ public class UserController {
 	private final AnswerService answerService;
 	private final CommentService commentService;
 	private final PasswordEncoder passwordEncoder;
+	private final profileImageService profileImageService;
 	
 	@GetMapping("/signup")
 	public String signup(UserCreateForm userCreateForm) {
@@ -99,11 +101,14 @@ public class UserController {
 	public String profile(Model model, Principal principal) {
 		String user = principal.getName(); //현재 로그인한 사람
 		String userEmail = userService.getUser(user).getEmail();
+		profileImageResponseDTO image = profileImageService.findImage(userEmail);
+		
 		model.addAttribute("username",user);
 		model.addAttribute("userEmail",userEmail);
 		model.addAttribute("userQuestion",questionService.findQuestionList(5, user));
 		model.addAttribute("userAnswer",answerService.findAnswerList(5, user));
 		model.addAttribute("userComment",commentService.findCommentList(5, user));
+		model.addAttribute("image",image);
 		return "profile";
 	}
 	
@@ -167,7 +172,14 @@ public class UserController {
 	}
 	
 	
-	
+	@PostMapping("/profileImage")
+	public String imageUpload(@ModelAttribute profileImageUploadDTO profileImageUploadDTO, Principal principal){
+		
+		String email = this.userService.getUser(principal.getName()).getEmail();
+		
+		profileImageService.upload(profileImageUploadDTO, email);
+		return "redirect:/user/profile";
+	}
 	
 	
 	
