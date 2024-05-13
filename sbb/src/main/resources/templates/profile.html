@@ -4,6 +4,15 @@
 		<section class="mb-3">
 			<div class="row">
 			<h4 "border-bottom-dark">내 정보</h4>
+			   <div class="col-md-4 mb-3 mt-3">
+                    <img th:src="@{${image.getUrl()}}" class="img-fluid">
+                    <form th:action="@{/user/profileImage}" th:method="post" enctype="multipart/form-data" class="mt-2">
+                        <div class="mb-3">
+                        <input type="file" class="form-control" name="file" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">프로필 사진 변경</button>
+                    </form>
+                </div>
 			<p>내 이름 : <span th:text="${username}"></span></p>
 			<p>내 이메일 : <span th:text="${userEmail}"></span></p>
 			<a th:href="@{/user/updatepassword}" class="btn btn-primary mb-3">비밀번호를 바꾸고 싶어요</a>	
