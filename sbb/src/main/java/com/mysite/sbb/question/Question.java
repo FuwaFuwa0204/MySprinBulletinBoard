@@ -69,4 +69,3 @@ public class Question {
     @OneToMany(mappedBy = "question", fetch=FetchType.LAZY,cascade=CascadeType.REMOVE)
     private List<questionImage> questionImage;
 
-}
