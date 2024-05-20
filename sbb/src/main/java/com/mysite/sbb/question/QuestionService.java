@@ -1,13 +1,19 @@
 package com.mysite.sbb.question;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +21,14 @@ import org.springframework.data.domain.Sort;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.user.profileImage;
+
+import jakarta.transaction.Transactional;
+
 import com.mysite.sbb.answer.Answer;
 
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice.This;
 
 /*
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -34,6 +45,10 @@ import org.springframework.data.jpa.domain.Specification;
 public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
+	private final questionImageRepository questionImageRepository;
+	
+    @Value("${file.path}")
+    private String uploadFolder;
 
 /*
 	private Specification<Question> search(String kw){
@@ -80,21 +95,92 @@ public class QuestionService {
 		}
 	}
 	
-	public void create(String subject, String content, SiteUser user, int category) {
+	public void create(String subject, String content, SiteUser user, int category, List<MultipartFile> getFile) {
 		Question q = new Question();
 		q.setSubject(subject);
 		q.setContent(content);
 		q.setAuthor(user);
 		q.setCreateDate(LocalDateTime.now());
 		q.setCategory(category);
-		this.questionRepository.save(q);
+		
+		this.questionRepository.save(q);	
+		
+		//이미지 업로드
+        if(getFile != null && !getFile.isEmpty()) {
+        	for(MultipartFile file:getFile) {
+        UUID uuid = UUID.randomUUID();
+        String imageFileName = uuid + "_" + file.getOriginalFilename();
+        File destinationFile = new File(uploadFolder + imageFileName);
+
+        try {
+            file.transferTo(destinationFile);
+            
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        questionImage image = questionImageRepository.findByQuestion(q);      
+        
+        image = questionImage.builder()
+                        .question(q)
+                        .url("/questionImages/" + imageFileName)
+                        .build();            
+        
+
+        questionImageRepository.save(image);
+        
+        	}
+        
+
+    }
+
 	}
 	
-	public void modify(Question question, String subject, String content) {
+    public questionImageResponseDTO findImage(Question question) {
+
+            return questionImageResponseDTO.builder().question(question).build();
+	
+
+    }
+
+    @Transactional
+	public void modify(Question question, String subject, String content, List<MultipartFile> files) {
 		question.setSubject(subject);
 		question.setContent(content);
 		question.setModifyDate(LocalDateTime.now());
-		this.questionRepository.save(question);
+		
+		//form으로 받아온 file이 존재하면 원래 image를 삭제한다.
+			if(files != null && !files.isEmpty()) {
+				this.questionImageRepository.deleteAllByQuestion(question);
+
+        	for(MultipartFile file:files) {
+        		
+            UUID uuid = UUID.randomUUID();
+            String imageFileName = uuid + "_" + file.getOriginalFilename();
+            File destinationFile = new File(uploadFolder + imageFileName);
+            
+            try {
+                file.transferTo(destinationFile);
+                
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            
+            questionImage image = this.questionImageRepository.findByQuestion(question);
+	        
+	        image = questionImage.builder()
+	                        .question(question)
+	                        .url("/questionImages/" + imageFileName)
+	                        .build();
+            
+           
+            this.questionImageRepository.save(image);
+
+
+	}
+			}
+			
+			this.questionRepository.save(question);
 	}
 	
 	public void delete(Question question) {

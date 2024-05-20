@@ -10,6 +10,7 @@ public class imageConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/profileImages/**").addResourceLocations("file:/C:/springImage/");
+        registry.addResourceHandler("/questionImages/**").addResourceLocations("file:/C:/springImage/");
 
     }
 }

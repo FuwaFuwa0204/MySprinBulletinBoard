@@ -60,6 +60,15 @@
 		<!--코멘트 기능 끝-->
 	</div>
 </div>
+<!--등록된 이미지-->
+<div class="mb-3" th:if="${image.urls != null}">
+   <label class="form-label">첨부된 이미지</label>
+         <div>
+           <th:block th:each="imageUrl : ${image.urls}">
+               <img th:src="${imageUrl}" alt="Image" width="200px" height="200px">
+                  </th:block>
+           </div>
+</div>
 	<!-- 답변의 갯수 표시 -->
 	<h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
 	<!-- 답변 반복 시작 -->
