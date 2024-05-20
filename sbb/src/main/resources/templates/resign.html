@@ -5,7 +5,6 @@
 				<h4>회원탈퇴</h4>
 			</div>
 		</div>
-		<form th
     <form th:action="@{/user/resign}" th:object="${resignForm}" method="post">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
           <div class="mb-3">

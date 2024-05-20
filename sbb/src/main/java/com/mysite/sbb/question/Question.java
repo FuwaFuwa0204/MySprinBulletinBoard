@@ -13,6 +13,7 @@ import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -63,4 +64,8 @@ public class Question {
 	@Column(columnDefinition = "integer default 0",nullable=false)
 	//조회수 추가
 	private int views;
+	
+	//question 지워지면 이미지도 지워짐
+    @OneToMany(mappedBy = "question", fetch=FetchType.LAZY,cascade=CascadeType.REMOVE)
+    private List<questionImage> questionImage;
 

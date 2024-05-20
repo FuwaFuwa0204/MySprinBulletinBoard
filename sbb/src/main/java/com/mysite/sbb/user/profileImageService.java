@@ -52,7 +52,9 @@ public class profileImageService {
     public profileImageResponseDTO findImage(String email) {
         SiteUser siteUser = userRepository.findByEmail(email).orElseThrow();
         profileImage image = profileImageRepository.findBySiteUser(siteUser);
-
+        
+        //<a target="_blank" href="https://icons8.com/icon/14736/customer">성별 중립 사용자</a> 작가: <a target="_blank" href="https://icons8.com">Icons8</a>
+        //https://icons8.kr/icons/set/profile
         String defaultImageUrl = "/profileImages/user.png";
 
         if (image == null) {

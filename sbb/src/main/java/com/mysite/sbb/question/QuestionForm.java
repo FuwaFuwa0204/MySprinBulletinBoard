@@ -1,8 +1,12 @@
 package com.mysite.sbb.question;
 
+import java.util.List;
+
+
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +20,6 @@ public class QuestionForm {
 	@NotEmpty(message="내용은 필수 항목입니다.")
 	private String content;
 	
-	/*
-    @NotEmpty(message="카테고리는 필수항목입니다.")
-    private String category; 
-    */
-
+	@Size(max=5)
+	private List<MultipartFile> files;
 }
