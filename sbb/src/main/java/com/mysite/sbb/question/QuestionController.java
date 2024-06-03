@@ -32,6 +32,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.CommentDTO;
 import com.mysite.sbb.answer.Answer;
 
 @RequiredArgsConstructor
@@ -72,6 +73,8 @@ public class QuestionController {
 		model.addAttribute("question",question);
 		model.addAttribute("answerPaging",answerPaging);
 		model.addAttribute("image", image);
+		//commentDto 생성해서 create
+		model.addAttribute("commentDTO",new CommentDTO());
 		return "question_detail";
 	}
 	

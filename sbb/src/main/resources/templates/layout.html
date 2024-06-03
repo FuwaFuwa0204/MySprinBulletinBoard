@@ -5,6 +5,9 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!--ajax csrf 토큰-->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf" th:content="${_csrf.token}">
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 	<!-- sbb CSS -->
@@ -21,6 +24,8 @@
 	<!-- 기본 템플릿 안에 삽입될 내용 Start -->
 	<th:block layout:fragment="content"></th:block>
 	<!-- 기본 템플릿 안에 삽입될 내용 End -->
+	<!--jquery-->
+<script src="http://code.jquery.com/jquery-latest.js"></script> 
 	<!-- Bootstrap JS -->
 	<script th:src="@{/bootstrap.min.js}"></script>
 	<!--자바스크립트 start-->
