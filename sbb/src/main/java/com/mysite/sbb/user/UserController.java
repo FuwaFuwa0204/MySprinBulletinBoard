@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.DataNotFoundException;
-import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.question.QuestionService;
 
@@ -32,7 +31,6 @@ public class UserController {
 	
 	private final UserService userService;
 	private final QuestionService questionService;
-	private final AnswerService answerService;
 	private final CommentService commentService;
 	private final PasswordEncoder passwordEncoder;
 	private final profileImageService profileImageService;
@@ -106,7 +104,6 @@ public class UserController {
 		model.addAttribute("username",user);
 		model.addAttribute("userEmail",userEmail);
 		model.addAttribute("userQuestion",questionService.findQuestionList(5, user));
-		model.addAttribute("userAnswer",answerService.findAnswerList(5, user));
 		model.addAttribute("userComment",commentService.findCommentList(5, user));
 		model.addAttribute("image",image);
 		return "profile";

@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mysite.sbb.comment.Comment;
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,17 +27,13 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
     @Query("select "
             + "distinct q "
             + "from Question q " 
-            + "left outer join SiteUser u1 on q.author=u1 "
-            + "left outer join Answer a on a.question=q "
-            + "left outer join SiteUser u2 on a.author=u2 "
+            + "left outer join SiteUser u on q.author=u "
             + "where "
     		+ "   (q.category = :category) "
     		+ "   and ( "
             + "   q.subject like %:kw% "
             + "   or q.content like %:kw% "
-            + "   or u1.username like %:kw% "
-            + "   or a.content like %:kw% "
-            + "   or u2.username like %:kw% "
+            + "   or u.username like %:kw% "
     		+ "   )")
     Page<Question> findAllByKeyword(@Param("kw") String kw, @Param("category") int category, Pageable pageable);
  	
@@ -44,6 +42,8 @@ public interface QuestionRepository extends JpaRepository<Question,Integer> {
     	+ "join SiteUser u on q.author=u "
     	+ "where u.username = :username ")
     List<Question> findQuestionList(@Param("username") String username, Pageable pageable);
+    
+    
 
 
 }

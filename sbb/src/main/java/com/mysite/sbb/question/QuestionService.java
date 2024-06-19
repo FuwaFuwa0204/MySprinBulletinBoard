@@ -25,7 +25,8 @@ import com.mysite.sbb.user.profileImage;
 
 import jakarta.transaction.Transactional;
 
-import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.comment.Comment;
+import com.mysite.sbb.comment.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.asm.Advice.This;
@@ -46,6 +47,7 @@ public class QuestionService {
 	
 	private final QuestionRepository questionRepository;
 	private final questionImageRepository questionImageRepository;
+	private final CommentRepository commentRepository; 
 	
     @Value("${file.path}")
     private String uploadFolder;
@@ -102,6 +104,7 @@ public class QuestionService {
 		q.setAuthor(user);
 		q.setCreateDate(LocalDateTime.now());
 		q.setCategory(category);
+		q.setCommentParentGrp(0);
 		
 		this.questionRepository.save(q);	
 		
@@ -194,9 +197,13 @@ public class QuestionService {
 	}
 	
 	public List<Question> findQuestionList(int num, String username) {
+
 		Pageable pageable = PageRequest.of(0, num);
 		return this.questionRepository.findQuestionList(username, pageable);
 	}
 	
+	public List<Comment> findByQuestionOrderByGrpAscSeqAsc(Question question){
+		return this.commentRepository.findByQuestionOrderByGrpAscSeqAsc(question);
+	}
 
 }

@@ -2,6 +2,7 @@
 package com.mysite.sbb.comment;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.mysite.sbb.answer.AnswerService;
-import com.mysite.sbb.question.Question;
-import com.mysite.sbb.answer.Answer;
+
 import com.mysite.sbb.question.QuestionService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
@@ -41,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
    
    private final QuestionService questionService;
-   private final AnswerService answerService;
    private final UserService userService;
    private final CommentService commentService;
    
@@ -74,29 +72,58 @@ public class CommentController {
    
    @PreAuthorize("isAuthenticated()")
    @PostMapping("/create/question")
-   @ResponseBody
    public ResponseEntity<?> createQuestionComment(@RequestBody CommentDTO commentDTO, Principal principal) {
       
           SiteUser siteUser = this.userService.getUser(principal.getName());
 
          Comment saveComment = commentService.saveQuestion(commentDTO,siteUser);
+         
+         
          return ResponseEntity.ok(saveComment);
          
    }
    
    @PreAuthorize("isAuthenticated()")
-   @PostMapping("/create/answer")
-   @ResponseBody
-   public ResponseEntity<?> creatAnswerComment(@RequestBody CommentDTO commentDTO, Principal principal) {
+   @PostMapping("/create/question/reply")
+   public ResponseEntity<?> createQuestionReply(@RequestBody CommentDTO commentDTO, Principal principal) {
       
           SiteUser siteUser = this.userService.getUser(principal.getName());
 
-         Comment saveComment = commentService.saveAnswer(commentDTO,siteUser);
+         Comment saveComment = commentService.addReply(commentDTO,siteUser);
+
+         
          return ResponseEntity.ok(saveComment);
          
    }
    
    /*
+   
+   @PreAuthorize("isAuthenticated()")
+   @PostMapping("/create/answer")
+   public ResponseEntity<?> creatAnswerComment(@RequestBody CommentDTO commentDTO, Principal principal,Model model) {
+		
+          SiteUser siteUser = this.userService.getUser(principal.getName());
+        	 
+          Comment saveComment = commentService.saveAnswer(commentDTO,siteUser);
+          
+          
+          return ResponseEntity.ok(saveComment);  
+
+        
+   }
+   
+   @PreAuthorize("isAuthenticated()")
+   @PostMapping("/create/answer/reply")
+   public ResponseEntity<?> createAnswerReply(@RequestBody CommentDTO commentDTO, Principal principal, Model model) {
+      
+         SiteUser siteUser = this.userService.getUser(principal.getName());
+
+          Comment saveComment = this.commentService.addReplyAnswer(commentDTO,siteUser);  
+
+         return ResponseEntity.ok(saveComment);
+         
+   }
+   
    @PreAuthorize("isAuthenticated()")
    @GetMapping("/create/question/{id}/{answerId}")
    //GetMapping에도 CommentForm 추가해줘야한다.

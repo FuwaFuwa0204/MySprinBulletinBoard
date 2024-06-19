@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.validation.BindingResult;
 
-import com.mysite.sbb.answer.AnswerForm;
+
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import com.mysite.sbb.user.profileImageUploadDTO;
@@ -30,10 +30,9 @@ import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.comment.CommentDTO;
-import com.mysite.sbb.answer.Answer;
+
 
 @RequiredArgsConstructor
 @Controller
@@ -42,7 +41,6 @@ public class QuestionController {
 	
 	private final QuestionService questionService;
 	private final UserService userService;
-	private final AnswerService answerService;
 	
 	@GetMapping("/list/{type}")
 	public String list(Model model,@PathVariable String type, @RequestParam(value="page", defaultValue="0") int page, @RequestParam(value="kw", defaultValue="") String kw) {
@@ -64,17 +62,22 @@ public class QuestionController {
 	}
 	//댓글 페이징 부분
 	@GetMapping(value= "/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value="answerPage", defaultValue="0") int answerPage) {
+	public String detail(Model model, @PathVariable("id") Integer id) {
 		//id로 조회한 question을 넣어준다.
 		//detail/{id}로 들어갈때마다 getQuestion을 한다. -> 조회수 증가.
 		Question question = this.questionService.getQuestion(id);
-		Page<Answer> answerPaging = this.answerService.getList(question,answerPage);
+		//Page<Answer> answerPaging = this.answerService.getList(question,answerPage);
 		questionImageResponseDTO image = this.questionService.findImage(question);
+		//answer is null 조건 없었을 때 => List<Comment> questionComment = this.questionService.findByQuestionOrderByGrpDescSeqAsc(question);
+		List<Comment> result = this.questionService.findByQuestionOrderByGrpAscSeqAsc(question);
+		
 		model.addAttribute("question",question);
-		model.addAttribute("answerPaging",answerPaging);
+		//model.addAttribute("answerPaging",answerPaging);
 		model.addAttribute("image", image);
 		//commentDto 생성해서 create
 		model.addAttribute("commentDTO",new CommentDTO());
+		model.addAttribute("questionComment",result);
+		
 		return "question_detail";
 	}
 	

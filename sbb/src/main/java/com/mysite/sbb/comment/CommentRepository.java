@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.mysite.sbb.question.Question;
+
+
 
 public interface CommentRepository  extends JpaRepository<Comment,Integer> {
 	
@@ -15,5 +18,11 @@ public interface CommentRepository  extends JpaRepository<Comment,Integer> {
         	+ "join SiteUser u on c.author=u "
         	+ "where u.username = :username ")
         List<Comment> findCommentList(@Param("username") String username, Pageable pageable);
+    
+    //grp 개수만큼 자식 개수가 나온다.
+    Integer countByGrp(Integer grp);
+    
+    List<Comment> findByQuestionOrderByGrpAscSeqAsc(Question question);
+    
 
 }
