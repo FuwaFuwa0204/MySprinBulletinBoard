@@ -3,9 +3,9 @@
 	<div class = "row my-3">
 		<div class="col-6">
 			   <a th:href="@{/question/create/qna}" class="btn btn-primary"
-                   th:if="${category == 0}">질문과답변 등록</a>
-                <a th:href="@{/question/create/free}" class="btn btn-primary"
-                   th:if="${category == 1}">자유게시판 등록</a>
+                   th:if="${category == 0}">자유게시판</a>
+                <a th:href="@{/question/create/calendar}" class="btn btn-primary"
+                   th:if="${category == 1}">일정 보기</a>
 		</div>
 		<div class="col-6">
 			<div class="input-group">

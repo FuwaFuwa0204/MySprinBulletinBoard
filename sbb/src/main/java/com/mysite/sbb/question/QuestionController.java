@@ -30,6 +30,8 @@ import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.mysite.sbb.calendar.CalendarDTO;
 import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.comment.CommentDTO;
 
@@ -47,7 +49,7 @@ public class QuestionController {
 		//name,value
 		int category = switch(type) {
 		case "qna" -> QuestionEnum.QNA.getStatus();
-		case "free" -> QuestionEnum.FREE.getStatus();
+		case "calendar" -> QuestionEnum.CALENDAR.getStatus();
 		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
 		};
 		
@@ -56,9 +58,15 @@ public class QuestionController {
 		Page<Question> paging = this.questionService.getList(page, category, kw);
 		model.addAttribute("paging",paging);
 		model.addAttribute("kw",kw);
-
-		//파일명
-		return "question_list";
+		model.addAttribute("calendarDTO", new CalendarDTO());
+        
+		if(category == 0) {
+			return "question_list";
+		} else {
+			
+			return "calendar";
+		}
+		
 	}
 	//댓글 페이징 부분
 	@GetMapping(value= "/detail/{id}")
@@ -107,7 +115,7 @@ public class QuestionController {
 		
 		int category = switch (type) {
 		case "qna" -> QuestionEnum.QNA.getStatus();
-		case "free" -> QuestionEnum.FREE.getStatus();
+		case "free" -> QuestionEnum.CALENDAR.getStatus();
 		default -> throw new RuntimeException("올바르지 않은 접근입니다.");
 	};  
 	    this.questionService.create(questionForm.getSubject(),questionForm.getContent(), siteUser, category, questionForm.getFiles());
