@@ -24,6 +24,9 @@
 				<li class="nav-item">
 					<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/profile}">마이 페이지</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link" sec:authorize="hasRole('ADMIN')" th:href="@{/user/userManage}">회원관리</a>
+				</li>
 			</ul>
 		</div>
 	</div>

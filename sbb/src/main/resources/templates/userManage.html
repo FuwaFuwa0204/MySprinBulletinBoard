@@ -1,0 +1,82 @@
+<html layout:decorate="~{layout}">
+	<div layout:fragment="content" class="container my-3">
+		<h1 class="mb-5">회원관리</h1>
+		<section class="mb-3">
+			<h4 "border-bottom-dark">회원목록</h4>
+			<div class="card py-3 px-3">
+				<th:block th:each="user: ${userList}">
+					<div class="row">
+						<div class="col-sm-3 my-3">
+						<span class="mx-3" th:text="${user.id}"></span>
+						<span class="mx-3" th:text="${user.username}"></span>
+						<span class="mx-3" th:text="${user.email}"></span>
+						</div>
+						<div class="col-sm-9">
+						<button th:onClick="openModal([[${user.username}]])" class="btn btn-secondary btn-sm">회원 탈퇴</button>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</section>
+		
+		<!--회원삭제 모달-->
+<div class="modal" tabindex="-1" id="resignModal">
+  <div class="modal-dialog">
+	  <input type="hidden" value="" id="usernameId">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p><span id="username" text=""></span> : 이 회원을 탈퇴시키겠습니까?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:onclick="closeModal()">아니오</button>
+        <button type="button" class="btn btn-primary" th:onClick="resign()">네</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	</div>
+	
+	<script layout:fragment="script" type ='text/javascript'>
+   
+      var header = $("meta[name='_csrf_header']").attr('content');
+      var token = $("meta[name='_csrf']").attr('content');
+   
+   function resign(){
+	   
+	  var userName= document.getElementById('usernameId').value;
+	  console.log(userName);
+      
+      $.ajax({
+         url:"/user/userManage/resign"+"/"+userName,
+         method:"get",
+         contentType:"application/json",
+         beforeSend : function (xhr){
+            xhr.setRequestHeader(header,token);
+           },
+         success:function(response){
+            location.reload();
+         },
+         error : function(){
+            alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            
+         }
+      });
+	   
+   }
+   
+        function openModal(username) {
+         document.getElementById('usernameId').value = username;
+         console.log( document.getElementById('usernameId').value);
+         document.getElementById('username').innerText=username;
+         document.getElementById('resignModal').style.display = 'block';
+
+  }
+  
+
+  function closeModal() {
+    document.getElementById('resignModal').style.display = 'none';
+  }
+  
+   </script>
+</html>
