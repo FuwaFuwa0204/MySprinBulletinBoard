@@ -1,5 +1,6 @@
 package com.mysite.sbb.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.asm.Advice.Return;
 
 import com.mysite.sbb.CommonUtil;
 import com.mysite.sbb.DataNotFoundException;
@@ -44,6 +46,10 @@ public class UserService {
 		}
 	}
 	
+	public List<SiteUser> getUserList(){
+		return this.userRepository.findAll();
+	}
+	
 	@Transactional
 	public void modifyPassword(String email) throws EmailException{
 		
@@ -74,6 +80,12 @@ public class UserService {
 		} else {
 			return false;
 		}
+	}
+	
+	public void userManageResign(String username) {
+		
+		SiteUser user = this.userRepository.findByUsername(username).orElseThrow();
+		this.userRepository.delete(user);
 	}
 	
 

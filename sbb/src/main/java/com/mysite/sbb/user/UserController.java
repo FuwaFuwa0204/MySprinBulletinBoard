@@ -6,8 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.DataNotFoundException;
@@ -18,9 +21,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -107,6 +113,29 @@ public class UserController {
 		model.addAttribute("userComment",commentService.findCommentList(5, user));
 		model.addAttribute("image",image);
 		return "profile";
+	}
+	
+	//이 권한 가진 사람만
+	@Secured("ROLE_ADMIN")	
+	@GetMapping("/userManage")
+
+	public String userManage(Model model, Principal principal) {
+		
+		List<SiteUser> userList = this.userService.getUserList();
+		
+		model.addAttribute("userList",userList);
+		
+		return "userManage";
+	}
+	
+	@Secured("ROLE_ADMIN")	
+	@GetMapping("/userManage/resign/{username}")
+	@ResponseBody
+	public ResponseEntity<?> userManageResign(@PathVariable String username) {
+		
+		this.userService.userManageResign(username);
+		
+		return ResponseEntity.ok("삭제성공");
 	}
 	
 	@PreAuthorize("isAuthenticated()")	

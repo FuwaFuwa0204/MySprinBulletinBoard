@@ -36,7 +36,7 @@
       <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
       class="delete btn btn-sm btn-outline-secondary"
       sec:authorize="isAuthenticated()"
-      th:if="${question.author != null and#authentication.getPrincipal().getUsername()==question.author.username}"
+      th:if="${question.author != null and #authentication.getPrincipal().getUsername()==question.author.username or #authentication.getPrincipal().getUsername()=='admin'}"
       th:text="삭제"></a>
       </div>
 
@@ -69,7 +69,7 @@
                         th:if="${#authentication.getPrincipal().getUsername() == comment.author.username} and ${comment.isDeleted==false}"
                         th:onClick="openModal([[${comment.id}]],[[${comment.content}]])" class="btn btn-secondary btn-sm">수정</button>
                     <button sec:authorize="isAuthenticated()"
-                        th:if="${#authentication.getPrincipal().getUsername() == comment.author.username} and ${comment.isDeleted==false}"
+                        th:if="${#authentication.getPrincipal().getUsername() == comment.author.username or #authentication.getPrincipal().getUsername() =='admin'} and ${comment.isDeleted==false}"
                         th:onClick="deleteComment([[${comment.id}]])" class="btn btn-secondary btn-sm">삭제</button>
                      <button th:if="${comment.isDeleted==false}" sec:authorize="isAuthenticated()" th:onClick="replyModal([[${comment.id}]])" class="btn btn-secondary btn-sm">답글</button>
                      
@@ -129,14 +129,14 @@
       var header = $("meta[name='_csrf_header']").attr('content');
       var token = $("meta[name='_csrf']").attr('content');
    
-   /*const delete_elements=document.getElementsByClassName("delete");
+   const delete_elements=document.getElementsByClassName("delete");
    Array.from(delete_elements).forEach(function(element){
       element.addEventListener('click', function(){
          if(confirm("정말로 삭제하시겠습니까?")){
             location.href=this.dataset.uri;
          };
       });
-   });*/
+   });
    const recommend_elements=document.getElementsByClassName("recommend");
    Array.from(recommend_elements).forEach(function(element){
       element.addEventListener('click', function(){
