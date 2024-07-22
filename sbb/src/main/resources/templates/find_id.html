@@ -1,0 +1,62 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-3">
+      <div class="my-3">
+         <div>
+            <h4>이메일로 아이디 찾기</h4>
+         </div>
+      </div>
+            <div class="mb-3">
+         <div id="endError"></div>
+            <label for="useremail" class="col-form-label">이메일 입력</label>
+            <input type="text" class="form-control" id="useremail">
+          </div>
+        <button type="button" class="btn btn-light" th:onclick="checkError()">아이디 찾기</button>
+        <div class="card p-3 m-3">
+         <span>내 아이디 : <span id="userid" text=''></span></span>
+      </div>
+</div>
+<script layout:fragment="script" type ='text/javascript'>
+     var header = $("meta[name='_csrf_header']").attr('content');
+      var token = $("meta[name='_csrf']").attr('content');
+   
+     function checkError(){
+     var userEmail = document.getElementById('useremail').value;
+     
+     var regExp = RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+     
+     if(!regExp.test(userEmail)){
+        alert("이메일 형식을 지켜주세요.")
+     }else if(userEmail.length===0){
+        alert("이메일을 입력해주세요.")
+     }else{
+        finduserid(userEmail);
+     }
+     }
+     
+     function finduserid(userEmail){
+      
+      var dto = {
+        "email":userEmail
+     }
+      $.ajax({
+         url:"/user/findid",
+         method:"post",
+         contentType:"application/json",
+         data: JSON.stringify(dto),
+         beforeSend : function (xhr){
+            xhr.setRequestHeader(header,token);
+           },
+         success:function(response){
+         //location.reload();
+         document.getElementById('userid').innerHTML=response;
+         },
+         error : function(){
+            alert("죄송합니다. 오류가 발생했습니다.");
+            
+         }
+      });
+        
+     }
+
+</script>
+</html>

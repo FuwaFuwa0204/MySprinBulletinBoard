@@ -1,38 +1,54 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3"> 
-	<div class="my-3">
-    <button sec:authorize="isAuthenticated()" th:onClick="openSchedule()" class="btn btn-outline-primary btn-lg">일정 추가</button>
-    <div id='calendar'></div>
+   <div class="my-3" >
+   <a sec:authorize="isAnonymous()" th:href="@{/user/login}" class="btn btn-light btn-lg mb-3">일정 추가</a>
+    <button sec:authorize="isAuthenticated()" th:onClick="openSchedule()" class="btn btn-light btn-lg mb-3">일정 추가</button>
+    <div id='calendar'></div> 
     </div> 
+
     <!--일정추가 모달창-->
 <div id="scheduleModal" class="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">일정 추가하기</h1>
+        <h1 style="color:black" class="modal-title fs-5" id="exampleModalLabel">일정 추가하기</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" th:onclick="closeSchedule()"></button>
       </div>
       <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="title" class="col-form-label">일정 내용:</label>
+            <label style="color:black" for="title" class="col-form-label">일정 내용:</label>
             <input type="text" class="form-control" id="title" placeholder="ex)서머 정규 T1 vs DRX 17:00">
           </div>
             <div class="mb-3">
-			<div id="startError"></div>
-            <label for="start" class="col-form-label">시작 날짜:</label>
+         <div id="startError"></div>
+            <label style="color:black" for="start" class="col-form-label">시작 날짜:</label>
             <input type="text" class="form-control" id="start" placeholder="ex)2024-06-25">
           </div>
             <div class="mb-3">
-			<div id="endError"></div>
-            <label for="end" class="col-form-label">종료 날짜:</label>
+         <div id="endError"></div>
+            <label style="color:black" for="end" class="col-form-label">종료 날짜:</label>
             <input type="text" class="form-control" id="end" placeholder="ex)2024-06-25">
           </div>
+          
+ <div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value='#D94844'>
+  <label class="form-check-label" for="flexRadioDefault1">
+    경기 일정
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="#81C147" checked>
+  <label class="form-check-label" for="flexRadioDefault2">
+    경기 외 일정
+  </label>
+</div>
         </form>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:onclick="closeSchedule()">Close</button>
-        <button type="button" class="btn btn-primary" th:onclick = "checkError()">Send message</button>
+        <button type="button" class="btn btn-primary" th:onclick = "checkError()">일정추가</button>
       </div>
     </div>
   </div>
@@ -40,17 +56,17 @@
 <!--종료-->
 <!--삭제 모달창-->
 <div sec:authorize="isAuthenticated()" id = "deleteModal" class="modal" tabindex="-1">
-	<input type="hidden" value="" id="deleteById">
-	  <div class="modal-dialog">
+   <input type="hidden" value="" id="deleteById">
+     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" th:onclick="closeDelete()"></button>
       </div>
       <div class="modal-body">
-		  <span>선택하신 일정을 삭제하시겠습니까?</span>
+        <span>선택하신 일정을 삭제하시겠습니까?</span>
       </div>
       <div class="modal-footer">
-		  <button type="button" class="btn btn-primary" th:onclick="closeDelete()">아니요</button>
+        <button type="button" class="btn btn-primary" th:onclick="closeDelete()">아니요</button>
         <button type="button" class="btn btn-primary" th:onclick="deleteSchedule()">네</button>
       </div>
     </div>
@@ -61,50 +77,59 @@
 </div>
     
 <script layout:fragment="script" type ='text/javascript'>
-	var header = $("meta[name='_csrf_header']").attr('content');
+   var header = $("meta[name='_csrf_header']").attr('content');
       var token = $("meta[name='_csrf']").attr('content');
+      
+      
       
         var calendarEl = document.getElementById('calendar');
         var request = $.ajax({
-			url:"/calendar/getList",
-			method:"GET"
-		});
-		//done은 다른 곳과 연결가능.
-		request.done(function(data){
-		 var calendar = new FullCalendar.Calendar(calendarEl, {
+         url:"/calendar/getList",
+         method:"GET"
+      });
+      //done은 다른 곳과 연결가능.
+      request.done(function(data){
+       var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
+          headerToolbar:{
+           left:'today',
+           center:'title',
+           right:'prev,next'
+        },
           titleFormat: function (date) {
           year = date.date.year;
           month = date.date.month + 1;
+       
 
       return year + "년 " + month + "월";
     },
           events:data,          
           eventClick:function(info){
-			  
-			  document.getElementById('deleteById').value = info.event.id;
-			  document.getElementById('deleteModal').style.display = 'block';
-		  },
-		  //날짜 하나 줄어든든 현상 해결	
+           
+           document.getElementById('deleteById').value = info.event.id;
+           document.getElementById('deleteModal').style.display = 'block';
+        },
+        //날짜 하나 줄어든든 현상 해결   
           eventDataTransform: function(event) {                                                                                                                                                                                                                                                                             
            event.end = moment(event.end).add(1, 'days').format('YYYY-MM-DD');                                                                                                                 
            return event;  
 }   ,
-	  
-		  eventColor:'#e4002b'
-
+     
+        eventColor: data.calendarColor
+           
+           
   });
         calendar.render();
-		});
-		
+      });
+      
       function closeDelete(){
-		  document.getElementById('deleteModal').style.display = 'none'
-	  }
-	  
-	  function deleteSchedule(){
-		  console.log( document.getElementById('deleteById').value);
+        document.getElementById('deleteModal').style.display = 'none'
+     }
+     
+     function deleteSchedule(){
+        console.log( document.getElementById('deleteById').value);
 
-		 var dto = {
+       var dto = {
          "id" : document.getElementById('deleteById').value
       };
       
@@ -117,32 +142,34 @@
             xhr.setRequestHeader(header,token);
            },
          success:function(response){
-                location.reload();				 
+                location.reload();             
          },
          error : function(){
             alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
             
          }
       });
-	  }
-	  
+     }
+     
       
       function openSchedule(){
-		   document.getElementById('scheduleModal').style.display = 'block';
-	  }
-	  function closeSchedule(){
-		   document.getElementById('scheduleModal').style.display = 'none';
-	  }
-	  
-	  function addSchedule(checkTitle,checkStart,checkEnd){
-	  var title = checkTitle;
+         document.getElementById('scheduleModal').style.display = 'block';
+     }
+     function closeSchedule(){
+         document.getElementById('scheduleModal').style.display = 'none';
+     }
+     
+     function addSchedule(checkTitle,checkStart,checkEnd,checkColor){
+     var title = checkTitle;
       var start = checkStart;
       var end = checkEnd;
+      var color =checkColor;
       
       var dto = {
          "calendarTitle" : title,
          "calendarStart" : start,
-         "calendarEnd" : end
+         "calendarEnd" : end,
+         "calendarColor" : color
       };
       
       $.ajax({
@@ -154,42 +181,50 @@
             xhr.setRequestHeader(header,token);
            },
          success:function(response){
-                location.reload();				 
+                location.reload();             
          },
          error : function(){
             alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
             
          }
       });
-	  
+     
   }
   
   function checkError(){
-	  var checkTitle = document.getElementById('title').value;
-	  var checkStart = document.getElementById('start').value;
-	  var checkEnd = document.getElementById('end').value;
-	  
-	  var regExp = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
-	  
-	  if(checkTitle.length === 0){
-		  alert("일정 내용 입력은 필수입니다.");
-	  } else if(checkStart.length === 0){
-		  alert("날짜 입력은 필수입니다.")
-	  } else if(checkEnd.length === 0){
-		  alert("날짜 입력은 필수입니다.")
-	  } else if(!regExp.test(checkStart)){
-		  alert("날짜 형식을 맞춰주세요.");
-	  } else if(!regExp.test(checkEnd)){
-		  alert("날짜 형식을 맞춰주세요.");
-	  } else if(new Date(checkEnd)- new Date(checkStart) < 0){
-		  alert("시작 날짜와 종료 날짜를 다시 확인해주세요.")
-	  }else{
-		  addSchedule(checkTitle,checkStart,checkEnd);
-	  }
-	       
+     var checkTitle = document.getElementById('title').value;
+     var checkStart = document.getElementById('start').value;
+     var checkEnd = document.getElementById('end').value;
+     
+     var checkColor;
+     
+     if(document.getElementById('flexRadioDefault1').checked){
+        checkColor=document.getElementById('flexRadioDefault1').value;
+     }else if(document.getElementById('flexRadioDefault2').checked){
+        checkColor=document.getElementById('flexRadioDefault2').value;
+     };
+     
+     var regExp = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
+     
+     if(checkTitle.length === 0){
+        alert("일정 내용 입력은 필수입니다.");
+     } else if(checkStart.length === 0){
+        alert("날짜 입력은 필수입니다.")
+     } else if(checkEnd.length === 0){
+        alert("날짜 입력은 필수입니다.")
+     } else if(!regExp.test(checkStart)){
+        alert("날짜 형식을 맞춰주세요.");
+     } else if(!regExp.test(checkEnd)){
+        alert("날짜 형식을 맞춰주세요.");
+     } else if(new Date(checkEnd)- new Date(checkStart) < 0){
+        alert("시작 날짜와 종료 날짜를 다시 확인해주세요.")
+     }else{
+        addSchedule(checkTitle,checkStart,checkEnd,checkColor);
+     }
+          
       }
 
-	  
+     
     </script>  
 
 </html>

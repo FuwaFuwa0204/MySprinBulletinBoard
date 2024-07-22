@@ -1,10 +1,16 @@
 package com.mysite.sbb.comment;
 
 import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
@@ -65,28 +71,28 @@ public class CommentService {
    
    //일반 댓글 생성
    public Comment saveQuestion(CommentDTO commentDTO, SiteUser siteUser) {
-	      
-	      Question question = this.questionRepository.findById(commentDTO.getQuestion().getId()).orElseThrow();
-	      
-	      question.setCommentParentGrp(question.getCommentParentGrp()+1);
-	      
-	      Comment build = Comment.builder()
-	            .content(commentDTO.getContent())
-	            .createDate(LocalDateTime.now())
-	            .author(siteUser)
-	            .question(commentDTO.getQuestion())
-	            .parentId(null)
-	            .grp(question.getCommentParentGrp())
-	            .seq(0)
-	            .dep(0)
-	            .isDeleted(false)
-	            .build();
-	      
-	       Comment save = commentRepository.save(build);
+         
+         Question question = this.questionRepository.findById(commentDTO.getQuestion().getId()).orElseThrow();
+         
+         question.setCommentParentGrp(question.getCommentParentGrp()+1);
+         
+         Comment build = Comment.builder()
+               .content(commentDTO.getContent())
+               .createDate(LocalDateTime.now())
+               .author(siteUser)
+               .question(commentDTO.getQuestion())
+               .parentId(null)
+               .grp(question.getCommentParentGrp())
+               .seq(0)
+               .dep(0)
+               .isDeleted(false)
+               .build();
+         
+          Comment save = commentRepository.save(build);
 
-	       
-	       return save;
-	   }
+          
+          return save;
+      }
    /*
    public Comment saveAnswer(CommentDTO commentDTO, SiteUser siteUser) {
       
@@ -166,92 +172,104 @@ public class CommentService {
 
 }
    
+   public Page<Comment> pagingComment(int page){
+      Pageable pageable = PageRequest.of(page,10);
+      return this.commentRepository.findAll(pageable);
+   }
+   
 
    //대댓글 생성
    public Comment addReply(CommentDTO commentDTO,SiteUser siteUser) {
 
-	   
-	   //Comment origin = this.commentRepository.findById(commentDTO.getId()).orElseThrow();
-	   
-	   Integer parentId = commentDTO.getParentId();
-	   
-	   Comment parent = this.commentRepository.findById(parentId).orElseThrow();
-	   
-	   Question question = commentDTO.getQuestion();
-	   
-	   Integer parentGrp = parent.getGrp(); //그룹은 그대로
-	   
-	   Integer parentSeq = parent.getSeq(); 
-	   
-	   Integer parentDep = parent.getDep(); //dep는 부모보다 +1
+      
+      //Comment origin = this.commentRepository.findById(commentDTO.getId()).orElseThrow();
+      
+      Integer parentId = commentDTO.getParentId();
+      
+      Comment parent = this.commentRepository.findById(parentId).orElseThrow();
+      
+      Question question = commentDTO.getQuestion();
+      
+      Integer parentGrp = parent.getGrp(); //그룹은 그대로
+      
+      Integer parentSeq = parent.getSeq(); 
+      
+      Integer parentDep = parent.getDep(); //dep는 부모보다 +1
 
-	   Integer seq = this.commentRepository.countByGrp(parentGrp);
-	   
-	   Integer dep = parentDep+1;
-	   
+      Integer seq = this.commentRepository.countByGrp(parentGrp);
+      
+      Integer dep = parentDep+1;
+      
         
-	      Comment build = Comment.builder()
-		            .content(commentDTO.getContent())
-		            .createDate(LocalDateTime.now())
-		            .author(siteUser)
-		            .question(question)
-		            .parentId(parent.getId())
-		            .grp(parentGrp)
-		            .seq(seq)
-		            .dep(dep)
-		            .isDeleted(false)
-		            .build();
-	      
-	      Comment result = this.commentRepository.save(build);
-	      
-	      return result;
-	   
+         Comment build = Comment.builder()
+                  .content(commentDTO.getContent())
+                  .createDate(LocalDateTime.now())
+                  .author(siteUser)
+                  .question(question)
+                  .parentId(parent.getId())
+                  .grp(parentGrp)
+                  .seq(seq)
+                  .dep(dep)
+                  .isDeleted(false)
+                  .build();
+         
+         Comment result = this.commentRepository.save(build);
+         
+         return result;
+      
    }
    /*
    
    public Comment addReplyAnswer(CommentDTO commentDTO,SiteUser siteUser) {
 
-	   
-	   //Comment origin = this.commentRepository.findById(commentDTO.getId()).orElseThrow();
-	   
-	   Integer parentId = commentDTO.getParentId();
-	   
-	   Comment parent = this.commentRepository.findById(parentId).orElseThrow();
-	   
-	   Answer answer = commentDTO.getAnswer();
-	   
-	   Question question = commentDTO.getQuestion();
-	   
-	   Integer parentGrp = parent.getGrp(); //그룹은 그대로
-	   
-	   Integer parentSeq = parent.getSeq(); 
-	   
-	   Integer parentDep = parent.getDep(); //dep는 부모보다 +1
+      
+      //Comment origin = this.commentRepository.findById(commentDTO.getId()).orElseThrow();
+      
+      Integer parentId = commentDTO.getParentId();
+      
+      Comment parent = this.commentRepository.findById(parentId).orElseThrow();
+      
+      Answer answer = commentDTO.getAnswer();
+      
+      Question question = commentDTO.getQuestion();
+      
+      Integer parentGrp = parent.getGrp(); //그룹은 그대로
+      
+      Integer parentSeq = parent.getSeq(); 
+      
+      Integer parentDep = parent.getDep(); //dep는 부모보다 +1
 
-	   Integer seq = this.commentRepository.countByGrp(parentGrp);
-	   
-	   Integer dep = parentDep+1;
-		   
-		   Comment build = Comment.builder()
-		            .content(commentDTO.getContent())
-		            .createDate(LocalDateTime.now())
-		            .author(siteUser)
-		            .question(question)
-		            .parentId(parent.getId())
-		            .grp(parentGrp)
-		            .seq(seq)
-		            .dep(dep)
-		            .isDeleted(false)
-		            .build();
-	      
-	      Comment result = this.commentRepository.save(build);
-	      
-	      return result;
+      Integer seq = this.commentRepository.countByGrp(parentGrp);
+      
+      Integer dep = parentDep+1;
+         
+         Comment build = Comment.builder()
+                  .content(commentDTO.getContent())
+                  .createDate(LocalDateTime.now())
+                  .author(siteUser)
+                  .question(question)
+                  .parentId(parent.getId())
+                  .grp(parentGrp)
+                  .seq(seq)
+                  .dep(dep)
+                  .isDeleted(false)
+                  .build();
+         
+         Comment result = this.commentRepository.save(build);
+         
+         return result;
 
 
-	   
+      
    }
    */
+   
+   public Page<Comment> getListByUser(int Page, String user, String kw){
+      List<Sort.Order> sorts = new ArrayList<>();
+      sorts.add(Sort.Order.desc("createDate"));
+      Pageable pageable = PageRequest.of(Page, 10, Sort.by(sorts));
+      return this.commentRepository.findAllByKeywordAndSiteUser(kw, user, pageable);
+   }
    
 
 

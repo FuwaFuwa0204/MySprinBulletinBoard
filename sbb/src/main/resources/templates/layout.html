@@ -2,23 +2,23 @@
 <html lang="ko">
 
 <head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<!--ajax csrf 토큰-->
-	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <!--ajax csrf 토큰-->
+   <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <meta name="_csrf" th:content="${_csrf.token}">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
-	<!-- sbb CSS -->
-	<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
-	<!--simpleMDE-->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+   <!-- sbb CSS -->
+   <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+   <!--simpleMDE-->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-	<title>Hello, sbb!</title>
+   <title>FUWAFUWA FANMADE T1 CALENDAR</title>
 
-	<style type="text/css">
+   <style type="text/css">
 .fc-day-sun a {
   color: red;
   text-decoration: none;
@@ -48,29 +48,47 @@
   color: black;
   text-decoration: none;
 }
-	</style>
+
+footer{
+   height: 10rem; /* footer 높이 */
+   
+}
+
+
+
+#wrapper{
+min-height: calc(100vh - 10rem); 
+}
+   </style>
 </head>
 
-<body>	
-	<!--calendar-->
-	 <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
-	<!-- 네비게이션바 -->
-	<!--moment-->
-	<script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
+<body>   
+   <!--calendar-->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+   <!-- 네비게이션바 -->
+   <!--moment-->
+   <script src='https://cdn.jsdelivr.net/npm/moment@2.27.0/min/moment.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/moment@5.5.0/main.global.min.js'></script>
     <!--moment 종료-->
-	<nav th:replace="~{navbar :: navbarFragment}"></nav>
-	<!-- 기본 템플릿 안에 삽입될 내용 Start : 여기에 내용 들어감 -->
-	<th:block layout:fragment="content"></th:block>
-	<!-- 기본 템플릿 안에 삽입될 내용 End -->
-	<!--jquery-->
+   <nav th:replace="~{navbar :: navbarFragment}"></nav>
+   <!-- 기본 템플릿 안에 삽입될 내용 Start : 여기에 내용 들어감 -->
+   <th:block layout:fragment="content"></th:block>
+   <!-- 기본 템플릿 안에 삽입될 내용 End -->
+   <!--jquery-->
     <script src="http://code.jquery.com/jquery-latest.js"></script> 
-	<!-- Bootstrap JS -->
-	<script th:src="@{/bootstrap.min.js}"></script>
-	<!--자바스크립트 start-->
-	<th:block layout:fragment="script"></th:block>
-	<!--자바스크립트 End-->
+   <!-- Bootstrap JS -->
+   <script th:src="@{/bootstrap.min.js}"></script>
+   <!--자바스크립트 start-->
+   <th:block layout:fragment="script"></th:block>
+   <!--자바스크립트 End-->
 
 </body>
+
+  <footer layout:framgent="footer" id="wrapper" class="py-3 my-4">
+     <p style="text-align: center;"><img oncontextmenu='return false' src="/t1logo.png" height="280" width:"600"></p>
+        <p class="text-center">&copy; 2024 &quot;FUWAFUWA FANMADE T1 CALENDAR&quot;</p>
+         <p class="text-center"> <img src="/pngwing.com.png"  height="30" width="20"> soyeonmail24@gmail.com</p>
+         <p class="text-center">*본 사이트는 티원 공식의 허락을 받아 만든 팬 메이드 비영리적 사이트로 설립/운영상 티원 구단과는 아무런 관계가 없습니다. 또한 본 사이트 로고 그림의 무단 도용 및 사용을 금지합니다.*</p>
+  </footer>
 
 </html>
