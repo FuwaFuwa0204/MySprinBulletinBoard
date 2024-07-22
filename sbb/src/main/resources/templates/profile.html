@@ -1,55 +1,46 @@
 <html layout:decorate="~{layout}">
-	<div layout:fragment="content" class="container my-3">
-		<h1 class="mb-5">My Page</h1>
-		<section class="mb-3">
-			<div class="row">
-			<h4 "border-bottom-dark">내 정보</h4>
-			   <div class="col-md-4 mb-3 mt-3">
-                    <img th:src="@{${image.getUrl()}}" class="img-fluid">
+   <div layout:fragment="content" class="container my-3">
+      <h1 class="mb-5">My Page</h1>
+      <section class="mb-3">
+         <div class="row">
+         <h4 "border-bottom-dark">내 정보</h4>
+         <div class="card">
+            <div class="col-md-4 mb-3 mt-3">
+                    <img th:src="@{${image.getUrl()}}" class="img-fluid" height="200" width="200">
                     <form th:action="@{/user/profileImage}" th:method="post" enctype="multipart/form-data" class="mt-2">
                         <div class="mb-3">
                         <input type="file" class="form-control" name="file" accept="image/*" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">프로필 사진 변경</button>
+                        <button type="submit" class="btn btn-light">프로필사진변경</button>
                     </form>
+             
+               <a href="javascript:void(0);" th:data-uri="@{/user/profile/imagedelete}" class="delete btn btn-light my-3" sec:authorize="isAuthenticated()" th:text="프로필사진삭제"></a>          
                 </div>
-			<p>내 이름 : <span th:text="${username}"></span></p>
-			<p>내 이메일 : <span th:text="${userEmail}"></span></p>
-			<a th:href="@{/user/updatepassword}" class="btn btn-primary mb-3">비밀번호를 바꾸고 싶어요</a>	
-			<a th:href="@{/user/resign}" class="btn btn-primary mb-3">회원탈퇴를 하고 싶어요.</a>
-			<h5 "border-bottom-dark">*소셜 로그인으로 가입한 경우 구글 계정에서 sbb 게시판 연동 해제를 해주시면 됩니다.*</h5>		
-			</div>
-		</section>
-		<section class="mb-3">
-			<h4 "border-bottom-dark">내가 쓴 질문</h4>
-			<div class="card py-3 px-3">
-				<th:block th:each="question: ${userQuestion}">
-					<div class="row">
-						<div class="col-sm-3">
-						<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
-						</div>
-						<div class="col-sm-9">
-							<p th:text ="${question.createDate}"></p>
-						</div>
-					</div>
-				</th:block>
-			</div>
-		</section>
-		<section class="mb-3">
-			<h4 "border-bottom-dark">내가 쓴 댓글</h4>
-				<div class="card py-3 px-3">
-				<th:block th:each="comment: ${userComment}">
-					<div class="row">
-						<div class="col-sm-3">
-						<a th:href="@{|/question/detail/${comment.question.id}|}" th:text="${comment.content}"></a>
-						</div>
-						<div class="col-sm-9">
-							<p th:text ="${comment.createDate}"></p>
-						</div>
-					</div>
-				</th:block>
-			</div>
-		</section>
+         <p>내 이름 : <span th:text="${username}"></span></p>
+         <p>내 이메일 : <span th:text="${userEmail}"></span></p>
+         </div>
+         </div>
+      </section>
+      <section class="mb-3 px-3 py-3 card">
+         <a th:href="@{/user/profile/myQuestion}"><h4 "border-bottom-dark">내가 쓴 질문</h4></a>
+      </section>
+      <section class="mb-3 px-3 py-3 card">
+         <a th:href="@{/user/profile/myComment}"><h4 "border-bottom-dark">내가 쓴 댓글</h4></a>
+      </section>
+      <section>
+         <a th:href="@{/user/updatepassword}" style="width:150px;" class="btn btn-light mb-3 mx-3">비밀번호 변경</a>   
+         <a th:href="@{/user/resign}" style="width:100px;" class="btn btn-light mb-3">회원탈퇴</a>
+</section>
+   </div>
+   <script layout:fragment="script" type ='text/javascript'>
 
-	</div>
+   const delete_elements=document.getElementsByClassName("delete");
+   Array.from(delete_elements).forEach(function(element){
+      element.addEventListener('click', function(){
+         if(confirm("정말로 삭제하시겠습니까?")){
+            location.href=this.dataset.uri;
+         };
+      });
+   });
+   </script>
 </html>

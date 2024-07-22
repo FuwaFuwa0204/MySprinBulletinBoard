@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
 @Service
 @RequiredArgsConstructor
 public class profileImageService {
-	
+   
     private final profileImageRepository profileImageRepository;
     private final UserRepository userRepository;
 
@@ -53,9 +54,8 @@ public class profileImageService {
         SiteUser siteUser = userRepository.findByEmail(email).orElseThrow();
         profileImage image = profileImageRepository.findBySiteUser(siteUser);
         
-        //<a target="_blank" href="https://icons8.com/icon/14736/customer">성별 중립 사용자</a> 작가: <a target="_blank" href="https://icons8.com">Icons8</a>
-        //https://icons8.kr/icons/set/profile
-        String defaultImageUrl = "/profileImages/user.png";
+        //application properties에 쓴 로컬 파일 경로에 있는 사진을 가져옴
+        String defaultImageUrl = "/profileImages/pngwing.com (2).png";
 
         if (image == null) {
             return profileImageResponseDTO.builder()
@@ -66,6 +66,18 @@ public class profileImageService {
                     .url(image.getUrl())
                     .build();
         }
+    }
+    
+    @Transactional 
+    public void profileImageDelete(SiteUser user) {
+       
+       profileImage profileimage = this.profileImageRepository.findBySiteUser(user);
+       
+       String defaultImageUrl = "/profileImages/pngwing.com (2).png";
+       
+       profileimage.setUrl(defaultImageUrl);
+       
+ 
     }
 
 }

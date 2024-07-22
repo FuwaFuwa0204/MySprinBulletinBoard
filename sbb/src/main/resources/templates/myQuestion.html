@@ -2,10 +2,7 @@
 <div layout:fragment="content" class="container my-3">
    <div class = "row my-3">
       <div class="col-6">
-            <a th:href="@{/question/create/qna}" class="btn btn-light"
-                   th:if="${category == 0}">글 쓰기</a>
-                <a th:href="@{/question/create/calendar}" class="btn btn-light"
-                   th:if="${category == 1}">일정 보기</a>
+      
       </div>
       <div class="col-6">
          <div class="input-group">
@@ -25,11 +22,10 @@
          </tr>
       </thead>
       <tbody>
-         <tr class="text-center" th:each="question, loop : ${paging}">
-            <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+         <tr class="text-center" th:each="question, loop : ${pagingQuestion}">
+            <td th:text="${pagingQuestion.getTotalElements - (pagingQuestion.number * pagingQuestion.size) - loop.index}"></td>
             <td class="text-start">
-               <a sec:authorize="isAuthenticated()" th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
-               <a sec:authorize="isAnonymous()" th:href="@{/user/login}" th:text="${question.subject}"></a>
+               <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
                <span class="text-danger small ms-2" th:if="${#lists.size(question.commentList) > 0}"
                   th:text="${#lists.size(question.commentList)}">
                </span>
@@ -41,39 +37,34 @@
       </tbody>
    </table>
    <!-- 페이징처리 시작 -->
-   <div th:if="${!paging.isEmpty()}">
+   <div th:if="${!pagingQuestion.isEmpty()}">
       <ul class="pagination justify-content-center">
-         <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+         <li class="page-item" th:classappend="${!pagingQuestion.hasPrevious} ? 'disabled'">
             <!--<a class="page-link" th:href="@{|?page=${paging.number-1}|}">-->
-            <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}">
+            <a class="page-link" href="javascript:void(0)" th:data-page="${pagingQuestion.number-1}">
                <span>이전</span>
             </a>
          </li>
-         <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-            th:if="${page >= paging.number-5 and page <= paging.number+5}"
-            th:classappend="${page == paging.number} ? 'active'" class="page-item">
+         <li th:each="page: ${#numbers.sequence(0, pagingQuestion.totalPages-1)}"
+            th:if="${page >= pagingQuestion.number-5 and page <= pagingQuestion.number+5}"
+            th:classappend="${page == pagingQuestion.number} ? 'active'" class="page-item">
             <!--<a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>-->
             <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
          </li>
-         <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+         <li class="page-item" th:classappend="${!pagingQuestion.hasNext} ? 'disabled'">
             <!--<a class="page-link" th:href="@{|?page=${paging.number+1}|}">-->
-            <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}">
+            <a class="page-link" href="javascript:void(0)" th:data-page="${pagingQuestion.number+1}">
                <span>다음</span>
             </a>
          </li>
       </ul>
    </div>
    <!-- 페이징처리 끝 -->
-   <!--카테고리별 form 생성-->
-   <form th:if="${category==0}" th:action="@{/question/list/qna}" method="get" id="searchForm">
+      <form th:action="@{/user/profile/myQuestion}" method="get" id="searchForm">
+      <!--name이 request param으로 전송됨-->
        <input type="hidden" id="kw" name="kw" th:value="${kw}">
-      <input type="hidden" id="page" name="page" th:value="${paging.number}">
-   </form>
-   
-      <form th:if="${category==1}" th:action="@{/question/list/free}" method="get" id="searchForm">
-       <input type="hidden" id="kw" name="kw" th:value="${kw}">
-      <input type="hidden" id="page" name="page" th:value="${paging.number}">
-   </form>
+      <input type="hidden" id="page" name="page" th:value="${pagingQuestion.number}">
+       </form>
 </div>
 
 <footer layout:fragment="footer">

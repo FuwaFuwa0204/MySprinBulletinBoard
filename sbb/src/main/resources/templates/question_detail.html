@@ -1,7 +1,8 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
+   <div sec:authorize="isAuthenticated()">
    <!-- 질문 -->
-   <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
+   <h4 class="border-bottom py-2" th:text="${question.subject}"></h4>
    <div class="card my-3">
       <div class="card-body">
          <!--style제거 하고 마크다운 삽입-->
@@ -41,24 +42,23 @@
       </div>
 
 <!--등록된 이미지-->
-<div class="mb-3" th:if="${image.urls != null}">
+<div th:if="${not #lists.isEmpty(image.urls)}" class="mb-3">
    <label class="form-label">첨부된 이미지</label>
          <div>
            <th:block th:each="imageUrl : ${image.urls}">
-               <img th:src="${imageUrl}" alt="Image" width="200px" height="200px">
+               <img  th:src="${imageUrl}" width="200px" height="200px">
                   </th:block>
            </div>
 </div>
-         
-         
    </div>
 
 </div>
  <!--코멘트 기능-->
-            <div class="mt-3" th:if="${not #lists.isEmpty(question.commentList)}">
-                <div th:each="comment,index : ${questionComment}" class="comment py-2 text-muted">
-					<input type="hidden" th:value="${comment.id}" th:id="comment_id">
-					<span th:if="${comment?.dep>0}" th:each="num : ${#numbers.sequence(1,comment?.dep)}">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <div style="background-color: white;" class="card mt-3" th:if="${not #lists.isEmpty(question.commentList)}">
+            <h5 class="mx-3 my-3" style=" text-decoration-line: underline;"> 댓글 목록</h5>
+                <div th:each="comment,index : ${questionComment}" class="comment py-2 text-muted mx-2 my-2">
+               <input type="hidden" th:value="${comment.id}" th:id="comment_id">
+               <span th:if="${comment?.dep>0}" th:each="num : ${#numbers.sequence(1,comment?.dep)}">&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     <span th:if="${comment.isDeleted==false}" th:id="comment_content" style="white-space: pre-line;" th:text="${comment.content}"></span>
                     <span th:if="${comment.isDeleted==true}" th:id="deleteComment" style="white-space: pre-line;"> 삭제된 댓글입니다.</span>
                     <span th:if="${comment.modifyDate != null}"
@@ -67,11 +67,11 @@
                         th:text="| - ${comment.author.username}, ${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}|"></span>
                     <button sec:authorize="isAuthenticated()"
                         th:if="${#authentication.getPrincipal().getUsername() == comment.author.username} and ${comment.isDeleted==false}"
-                        th:onClick="openModal([[${comment.id}]],[[${comment.content}]])" class="btn btn-secondary btn-sm">수정</button>
+                        th:onClick="openModal([[${comment.id}]],[[${comment.content}]])" class="btn btn-light btn-sm">수정</button>
                     <button sec:authorize="isAuthenticated()"
                         th:if="${#authentication.getPrincipal().getUsername() == comment.author.username or #authentication.getPrincipal().getUsername() =='admin'} and ${comment.isDeleted==false}"
-                        th:onClick="deleteComment([[${comment.id}]])" class="btn btn-secondary btn-sm">삭제</button>
-                     <button th:if="${comment.isDeleted==false}" sec:authorize="isAuthenticated()" th:onClick="replyModal([[${comment.id}]])" class="btn btn-secondary btn-sm">답글</button>
+                        th:onClick="deleteComment([[${comment.id}]])" class="btn btn-light btn-sm">삭제</button>
+                     <button th:if="${comment.isDeleted==false}" sec:authorize="isAuthenticated()" th:onClick="replyModal([[${comment.id}]])" class="btn btn-light btn-sm">답글</button>
                      
                               <!--댓글 수정 모달창-->
        <div id="commentModal" class="modal" tabindex="-1">
@@ -101,7 +101,7 @@
         <button type="button" class="btn-close" th:onclick="closeReplyModal()" aria-label="Close"></button>
        </div>
        <div class="modal-body">
-		<input type="hidden" value="" th:id="parentId">
+      <input type="hidden" value="" th:id="parentId">
         <textarea th:field="${commentDTO.content}" id="reply_text" rows="5" cols="80"></textarea>
       </div>
       <div class="modal-footer">
@@ -115,12 +115,18 @@
             </div>
             
 
-            <div "form-inline mb-2">
+            <div class="form-inline my-5">
          <textarea sec:authorize="isAuthenticated()" class="form-control" th:field="${commentDTO.content}" id="comment_text" rows="5"></textarea>
-         <button onclick = "questionComment()" sec:authorize="isAuthenticated()" type="button" class="btn btn-dark mt-3">댓글 쓰기</button>          
+         <button onclick = "questionComment()" sec:authorize="isAuthenticated()" type="button" class="btn btn-light mt-3">댓글 쓰기</button>          
+         </div>
+         
          </div>
 
 </div>
+
+<footer layout:fragment="footer">
+   
+</footer>
 
 
 <!--자바스크립트-->
@@ -194,7 +200,7 @@
   
 
   function saveEditedComment(){
-	  
+     
      var comment_id = document.getElementById('comment_id').value;
      var edited_comment = document.getElementById('edited_comment').value;
      
@@ -226,8 +232,8 @@
   }
 
   function deleteComment(comment_Id){
-	  
-	  var commentId = comment_Id;
+     
+     var commentId = comment_Id;
      
       var dto = {
          "id" : commentId
@@ -259,18 +265,18 @@
          console.log(commentId);
          document.getElementById('replyModal').style.display = 'block';
        
-	  
+     
   }
 
   
   function closeReplyModal(){
-	  
-	      document.getElementById('replyModal').style.display = 'none';
+     
+         document.getElementById('replyModal').style.display = 'none';
   }
 
   function addReply(){
-	  
-	  var reply = document.getElementById('reply_text').value;
+     
+     var reply = document.getElementById('reply_text').value;
       var questionId = document.getElementById('questionId').value;
       var parentId = document.getElementById('parentId').value;
       
@@ -298,7 +304,7 @@
             
          }
       });
-	  
+     
   }
 
   

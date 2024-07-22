@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
-		<div class="my-3 border bottom">
+		<div class="my-3">
 			<div>
 				<h4>회원탈퇴</h4>
 			</div>
@@ -11,7 +11,7 @@
             <label for="password" class="form-label">사용자 비밀번호 재확인</label>
             <input type="password" th:field="*{password}" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">회원탈퇴 완료</button>
+        <button type="submit" class="btn btn-light">회원탈퇴 완료</button>
     </form>
 </div>
 </html>
