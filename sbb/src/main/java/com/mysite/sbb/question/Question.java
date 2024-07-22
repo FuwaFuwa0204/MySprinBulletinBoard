@@ -73,3 +73,4 @@ public class Question {
     //question의 부모 댓글 번호. comment에 달면 차례대로 증가시키기 어려워서 그때그때 가져와서 쓸 수 있도록 question에 추가.
     private Integer commentParentGrp;
 }
+
