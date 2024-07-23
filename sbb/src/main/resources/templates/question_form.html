@@ -1,18 +1,25 @@
 <html layout:decorate="~{layout}">
 	<div layout:fragment="content" class="container">
-		<h5 class = "my-3 border bottom pb-2">질문 등록</h5>
-		<form th:object="${questionForm}" method="post">
+		<form th:object="${questionForm}" method="post" enctype="multipart/form-data">
 			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
-			<div class="mb-3">
+			<div class="mb-3 mt-3">
 				<label for="subject" class="form-label">제목</label>
 				<input type="text" th:field="*{subject}" class="form-control">
 			</div>
 			<div class="mb-3">
 				<label for="content" class ="form-label">내용</label>
-				<textarea th:field="*{content}" class="form-control" rows="10"></textarea>
+				<textarea th:field="*{content}" class="form-control" rows="10" id="simpleMDE"></textarea>
 			</div>
-			<input type="submit" value="저장하기" class="btn btn-primary my-2">
+			   <div class="mb-3">
+				   <label for="files">이미지 업로드</label>
+                <input type="file" class="form-control" th:field="*{files}" multiple>
+                
+            </div>
+			<input type="submit" value="글 등록" class="btn btn-light my-2">
 		</form>
 	</div>
+	<script layout:fragment="script" type='text/javascript'>
+		const simpleMDE = new SimpleMDE({ element: document.getElementById("simpleMDE") });
+	</script>
 </html>
