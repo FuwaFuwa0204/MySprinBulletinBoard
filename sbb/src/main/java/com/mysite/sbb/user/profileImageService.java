@@ -53,7 +53,7 @@ public class profileImageService {
     public profileImageResponseDTO findImage(String email) {
         SiteUser siteUser = userRepository.findByEmail(email).orElseThrow();
         profileImage image = profileImageRepository.findBySiteUser(siteUser);
-        
+
         //application properties에 쓴 로컬 파일 경로에 있는 사진을 가져옴
         String defaultImageUrl = "/profileImages/pngwing.com (2).png";
 

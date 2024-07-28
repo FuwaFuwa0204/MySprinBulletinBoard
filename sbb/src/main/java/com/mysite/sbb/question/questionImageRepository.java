@@ -9,6 +9,7 @@ public interface questionImageRepository extends JpaRepository<questionImage, In
 	
 	questionImage findByQuestion(Question question);
 	List<questionImage> deleteAllByQuestion(Question question);
+	List<questionImage> findAllByQuestion(Question question);
 	
 	
 	

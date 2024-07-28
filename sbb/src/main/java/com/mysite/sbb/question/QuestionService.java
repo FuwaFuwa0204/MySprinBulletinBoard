@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.user.SiteUser;
-import com.mysite.sbb.user.profileImage;
 
 import jakarta.transaction.Transactional;
 
@@ -29,7 +28,6 @@ import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.comment.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice.This;
 
 /*
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -41,6 +39,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 */
 
+
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
@@ -48,6 +47,7 @@ public class QuestionService {
    private final QuestionRepository questionRepository;
    private final questionImageRepository questionImageRepository;
    private final CommentRepository commentRepository; 
+   private final QuestionS3Uploader S3Uploader;
    
     @Value("${file.path}")
     private String uploadFolder;
@@ -105,7 +105,7 @@ public class QuestionService {
       }
    }
    
-   public void create(String subject, String content, SiteUser user, int category, List<MultipartFile> getFile) {
+   public void create(String subject, String content, SiteUser user, int category, List<MultipartFile> getFile) throws IOException {
       Question q = new Question();
       q.setSubject(subject);
       q.setContent(content);
@@ -116,6 +116,22 @@ public class QuestionService {
 
       this.questionRepository.save(q);   
       
+      
+      if(getFile != null && !getFile.isEmpty()) {
+    	  for(MultipartFile file:getFile) {
+    		  String url = this.S3Uploader.upload(file, "questionimages");
+    		  
+    	        questionImage image = questionImageRepository.findByQuestion(q);      
+    	        
+    	        image = questionImage.builder()
+    	                        .question(q)
+    	                        .url(url)
+    	                        .build();            
+    	        questionImageRepository.save(image);
+    	  }
+      }
+      
+      /*
       //이미지 업로드
       //MultipartFile 기본 값 넘어오는 오류 => 비어있어도 파일이 파라미터로 넘어오기때문에.
         //if(getFile != null && !getFile.isEmpty()) {
@@ -145,6 +161,8 @@ public class QuestionService {
         }
 
         //} 
+         
+         */
         
    }
    
@@ -156,11 +174,34 @@ public class QuestionService {
     }
 
     @Transactional
-   public void modify(Question question, String subject, String content, List<MultipartFile> files) {
+   public void modify(Question question, String subject, String content, List<MultipartFile> files) throws IOException {
       question.setSubject(subject);
       question.setContent(content);
       question.setModifyDate(LocalDateTime.now());
+      List<questionImage> questionImageList = this.questionImageRepository.findAllByQuestion(question);
       
+      
+      if(files != null && !files.isEmpty()) {
+    	  for(questionImage image:questionImageList) {
+    		  this.S3Uploader.deleteFile(image.getUrl());
+    	  }
+          this.questionImageRepository.deleteAllByQuestion(question);
+        	 
+         for(MultipartFile file:files) {
+        	 String url = this.S3Uploader.updateFile(file,"questionimages");
+             questionImage image = this.questionImageRepository.findByQuestion(question);
+             
+             image = questionImage.builder()
+                             .question(question)
+                             .url(url)
+                             .build();
+              
+             
+              this.questionImageRepository.save(image);
+         }
+         }
+      
+      /*
       //form으로 받아온 file이 존재하면 원래 image를 삭제한다.
          if(files != null && !files.isEmpty()) {
             this.questionImageRepository.deleteAllByQuestion(question);
@@ -187,15 +228,28 @@ public class QuestionService {
             
            
             this.questionImageRepository.save(image);
+           
 
 
-   }
+   } 
          }
          
          this.questionRepository.save(question);
+         */
+      
+      
    }
    
    public void delete(Question question) {
+	   
+	  List<questionImage> questionImageList = this.questionImageRepository.findAllByQuestion(question);
+	  
+      if(questionImageList != null && !questionImageList.isEmpty()) {
+      for(questionImage file:questionImageList) {
+    	  this.S3Uploader.deleteFile(file.getUrl());
+      }
+      }
+	  this.questionImageRepository.deleteAllByQuestion(question);
       this.questionRepository.delete(question);
    }
    

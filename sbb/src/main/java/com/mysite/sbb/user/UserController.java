@@ -25,6 +25,7 @@ import com.mysite.sbb.question.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class UserController {
    private final CommentService commentService;
    private final PasswordEncoder passwordEncoder;
    private final profileImageService profileImageService;
+   private final S3Uploader S3Uploader;
    
    @GetMapping("/signup")
    public String signup(UserCreateForm userCreateForm) {
@@ -132,7 +134,8 @@ public class UserController {
       String user = principal.getName(); //현재 로그인한 사람
       String userEmail = userService.getUser(user).getEmail();
       Long userid = userService.getUser(user).getId();
-      profileImageResponseDTO image = profileImageService.findImage(userEmail);
+      //원래는 profileImageService
+      profileImageResponseDTO image = this.userService.getProfileImage(user);
       
       model.addAttribute("username",user);
       model.addAttribute("userEmail",userEmail);
@@ -270,23 +273,38 @@ public class UserController {
    
    
    @PostMapping("/profileImage")
-   public String imageUpload(@ModelAttribute profileImageUploadDTO profileImageUploadDTO, Principal principal){
+   public String imageUpload(@ModelAttribute profileImageUploadDTO profileImageUploadDTO, Principal principal) throws IOException{
       
+	   /*
       String email = this.userService.getUser(principal.getName()).getEmail();
       
       profileImageService.upload(profileImageUploadDTO, email);
       return "redirect:/user/profile";
+      */
+	   
+	   this.userService.upload(profileImageUploadDTO, principal.getName());
+	   
+	   return "redirect:/user/profile";
+	   
    }
    
    @GetMapping("/profile/imagedelete")
    public String imageDelete(Principal principal) {
+	   
+	   /*
       
       SiteUser user = this.userService.getUser(principal.getName());
       
       this.profileImageService.profileImageDelete(user);
         
       return "redirect:/user/profile";
-      
+      */
+	   
+	   SiteUser user = this.userService.getUser(principal.getName());
+	   
+	   this.userService.deleteImage(user);
+
+	  return "redirect:/user/profile";
    }
    
 

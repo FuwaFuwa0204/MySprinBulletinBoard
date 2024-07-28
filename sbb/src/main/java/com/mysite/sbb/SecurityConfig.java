@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 
 
 
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +25,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+
 @RequiredArgsConstructor
 //스프링의 환경설정 파일
 @Configuration
@@ -42,7 +44,8 @@ public class SecurityConfig {
 		.headers((headers)->headers.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
 		.formLogin((formLogin)->formLogin.loginPage("/user/login").defaultSuccessUrl("/"))
 		//userInfoEndpodint로 소셜로그인 성공시 OAuth2UserService로 실행
-		.oauth2Login((oauth2Login) -> oauth2Login.defaultSuccessUrl("/").userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService)))
+		//여기서 오류나면 implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' 되었는지 gradle에서 확인하기. 자꾸 없어진다..
+		.oauth2Login((oauth2Login)->oauth2Login.defaultSuccessUrl("/").userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService)))
 		.logout((logout)->logout.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout")).logoutSuccessUrl("/").invalidateHttpSession(true));
 		
 		return http.build();

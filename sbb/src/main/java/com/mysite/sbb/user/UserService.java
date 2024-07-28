@@ -1,34 +1,34 @@
 package com.mysite.sbb.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice.Return;
 
 import com.mysite.sbb.CommonUtil;
 import com.mysite.sbb.DataNotFoundException;
 
 import jakarta.transaction.Transactional;
 
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
    
    private final UserRepository userRepository;
+   private final profileImageRepository profileImageRepository;
    private final PasswordEncoder passwordEncoder;
    private final CommonUtil commonUtil;
    private final sendingEmailService sendingEmailService;
+   private final S3Uploader S3Uploader;
    
    public SiteUser create(String username, String email, String password) {
       SiteUser user = new SiteUser();
@@ -99,6 +99,61 @@ public class UserService {
       
       return user.getUsername();
             
+   }
+   
+   //aws s3 이미지 관련 메소드
+   
+   
+   public void upload(profileImageUploadDTO profileImageUploadDTO, String username) throws IOException {
+	   
+	   SiteUser user = this.userRepository.findByUsername(username).orElseThrow();
+	   
+	  
+	   profileImage image = this.profileImageRepository.findBySiteUser(user);
+	   
+	   if(image != null) {
+		   String url = this.S3Uploader.updateFile(profileImageUploadDTO.getFile(), image.getUrl(), username);
+		   image.updateUrl(url);
+           this.profileImageRepository.save(image);
+
+		   
+	   }else { 
+	   String url = this.S3Uploader.upload(profileImageUploadDTO.getFile(),"profileimages");
+	
+	   image = profileImage.builder()
+               .siteUser(user)
+               .url(url)
+               .build();
+	   
+	   this.profileImageRepository.save(image);
+	   
+	   }
+
+	   
+	   this.profileImageRepository.save(image);
+   }
+   
+   public profileImageResponseDTO getProfileImage(String username) {
+	   SiteUser user = this.userRepository.findByUsername(username).orElseThrow();
+	   profileImage image = this.profileImageRepository.findBySiteUser(user);
+	   
+	   if(image == null) {
+		   //aws s3 경로.
+           return profileImageResponseDTO.builder()
+                   .url("https://fuwafuwacal.s3.ap-northeast-2.amazonaws.com/pngwing.com+(2).png")
+                   .build();
+	   }else {
+           return profileImageResponseDTO.builder()
+                   .url(image.getUrl())
+                   .build();
+	   }
+   }
+   
+   public void deleteImage(SiteUser user) {
+	   String fileName = getProfileImage(user.getUsername()).getUrl().substring(1);
+	   this.S3Uploader.deleteFile(fileName);
+	   profileImage image = this.profileImageRepository.findBySiteUser(user);
+	   this.profileImageRepository.delete(image);
    }
    
 
