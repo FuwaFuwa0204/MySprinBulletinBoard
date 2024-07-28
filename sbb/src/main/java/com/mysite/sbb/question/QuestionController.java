@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -105,7 +106,7 @@ public class QuestionController {
 	@PreAuthorize("isAuthenticated()")
 	//질문등록용
 	@PostMapping("/create/{type}")
-	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal,@PathVariable String type) {
+	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal,@PathVariable String type) throws IOException {
 		
 		SiteUser siteUser = this.userService.getUser(principal.getName());
 		
@@ -124,7 +125,7 @@ public class QuestionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify/{id}")
-	public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) {
+	public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) throws IOException {
 		
 		if(bindingResult.hasErrors()) {
 			return "question_form";

@@ -62,7 +62,9 @@ min-height: calc(100vh - 10rem);
    </style>
 </head>
 
-<body>   
+<body>     
+	<!--calendar보다 위에 있어야함, http를 https로 바꿔야함. jquery-->
+    <script src="https://code.jquery.com/jquery-latest.js"></script>  
    <!--calendar-->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
    <!-- 네비게이션바 -->
@@ -74,8 +76,7 @@ min-height: calc(100vh - 10rem);
    <!-- 기본 템플릿 안에 삽입될 내용 Start : 여기에 내용 들어감 -->
    <th:block layout:fragment="content"></th:block>
    <!-- 기본 템플릿 안에 삽입될 내용 End -->
-   <!--jquery-->
-    <script src="http://code.jquery.com/jquery-latest.js"></script> 
+
    <!-- Bootstrap JS -->
    <script th:src="@{/bootstrap.min.js}"></script>
    <!--자바스크립트 start-->
