@@ -119,6 +119,7 @@ public class QuestionService {
       
       if(getFile != null && !getFile.isEmpty()) {
     	  for(MultipartFile file:getFile) {
+		   if(file.getOriginalFilename().length()!=0) {
     		  String url = this.S3Uploader.upload(file, "questionimages");
     		  
     	        questionImage image = questionImageRepository.findByQuestion(q);      
@@ -129,6 +130,7 @@ public class QuestionService {
     	                        .build();            
     	        questionImageRepository.save(image);
     	  }
+	  }
       }
       
       /*
@@ -181,13 +183,14 @@ public class QuestionService {
       List<questionImage> questionImageList = this.questionImageRepository.findAllByQuestion(question);
       
       
-      if(files != null && !files.isEmpty()) {
+      if(files.get(0).getOriginalFilename().length()!=0) {
     	  for(questionImage image:questionImageList) {
     		  this.S3Uploader.deleteFile(image.getUrl());
     	  }
           this.questionImageRepository.deleteAllByQuestion(question);
         	 
          for(MultipartFile file:files) {
+		  if(file.getOriginalFilename().length()!=0) {
         	 String url = this.S3Uploader.updateFile(file,"questionimages");
              questionImage image = this.questionImageRepository.findByQuestion(question);
              
@@ -200,6 +203,7 @@ public class QuestionService {
               this.questionImageRepository.save(image);
          }
          }
+      }
       
       /*
       //form으로 받아온 file이 존재하면 원래 image를 삭제한다.
