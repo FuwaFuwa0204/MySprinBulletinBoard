@@ -22,5 +22,4 @@ public class QuestionForm {
 	
 	@Size(max=5)
 	private List<MultipartFile> files;
-
 }
