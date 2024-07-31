@@ -75,6 +75,8 @@ public class Comment {
 	
 	private Integer parentId;
 	
+	private String parentName;
+	
     @ColumnDefault("FALSE")
     @Column(nullable = false)
 	private Boolean isDeleted;

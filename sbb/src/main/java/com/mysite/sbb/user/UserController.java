@@ -46,8 +46,6 @@ public class UserController {
    private final QuestionService questionService;
    private final CommentService commentService;
    private final PasswordEncoder passwordEncoder;
-   private final profileImageService profileImageService;
-   private final S3Uploader S3Uploader;
    
    @GetMapping("/signup")
    public String signup(UserCreateForm userCreateForm) {
@@ -136,6 +134,7 @@ public class UserController {
       Long userid = userService.getUser(user).getId();
       //원래는 profileImageService
       profileImageResponseDTO image = this.userService.getProfileImage(user);
+      profileImage checkimage= this.userService.findProfileImageByUser(user);
       
       model.addAttribute("username",user);
       model.addAttribute("userEmail",userEmail);
@@ -143,6 +142,7 @@ public class UserController {
       model.addAttribute("userQuestion",questionService.findQuestionList(5, user));
       model.addAttribute("userComment",commentService.findCommentList(5, user));
       model.addAttribute("image",image);
+      model.addAttribute("checkimage",checkimage);
       return "profile";
    }
    
@@ -256,14 +256,15 @@ public class UserController {
       //입력으로 받아들이는 건 폼 클래스에서 가져오기
       String password = resignForm.getPassword();
       
+      
       if(bindingResult.hasErrors()) {
          return "resign_form";
-      }else {
+      }else{
       try {
          this.userService.resign(email,password);
          return "redirect:/user/logout";
       }catch(DataNotFoundException e) {
-         bindingResult.rejectValue("password","passwordInCorrect","비밀번호가 일치하지 않습니다.");
+         bindingResult.rejectValue("password","passwordInCorrect","비밀번호가 일치하지 않습니다. 구글 소셜 로그인 사용자라면 구글 계정에서 연결을 해제하세요.");
          return "resign_form";
       }
       }

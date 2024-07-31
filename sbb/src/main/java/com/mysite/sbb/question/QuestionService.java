@@ -49,8 +49,8 @@ public class QuestionService {
    private final CommentRepository commentRepository; 
    private final QuestionS3Uploader S3Uploader;
    
-    @Value("${file.path}")
-    private String uploadFolder;
+    //@Value("${file.path}")
+    //private String uploadFolder;
 
 /*
    private Specification<Question> search(String kw){
@@ -119,6 +119,7 @@ public class QuestionService {
       
       if(getFile != null && !getFile.isEmpty()) {
     	  for(MultipartFile file:getFile) {
+    		  if(file.getOriginalFilename().length()!=0) {
     		  String url = this.S3Uploader.upload(file, "questionimages");
     		  
     	        questionImage image = questionImageRepository.findByQuestion(q);      
@@ -128,6 +129,7 @@ public class QuestionService {
     	                        .url(url)
     	                        .build();            
     	        questionImageRepository.save(image);
+    	  }
     	  }
       }
       
@@ -181,13 +183,14 @@ public class QuestionService {
       List<questionImage> questionImageList = this.questionImageRepository.findAllByQuestion(question);
       
       
-      if(files != null && !files.isEmpty()) {
+      if(files.get(0).getOriginalFilename().length()!=0) {
     	  for(questionImage image:questionImageList) {
     		  this.S3Uploader.deleteFile(image.getUrl());
     	  }
           this.questionImageRepository.deleteAllByQuestion(question);
         	 
          for(MultipartFile file:files) {
+        	 if(file.getOriginalFilename().length()!=0) {
         	 String url = this.S3Uploader.updateFile(file,"questionimages");
              questionImage image = this.questionImageRepository.findByQuestion(question);
              
@@ -198,6 +201,7 @@ public class QuestionService {
               
              
               this.questionImageRepository.save(image);
+         }
          }
          }
       

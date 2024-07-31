@@ -149,6 +149,12 @@ public class UserService {
 	   }
    }
    
+   public profileImage findProfileImageByUser(String username) {
+	   SiteUser user = this.userRepository.findByUsername(username).orElseThrow();
+	   profileImage image = this.profileImageRepository.findBySiteUser(user);
+	   return image;
+   }
+   
    public void deleteImage(SiteUser user) {
 	   String fileName = getProfileImage(user.getUsername()).getUrl().substring(1);
 	   this.S3Uploader.deleteFile(fileName);

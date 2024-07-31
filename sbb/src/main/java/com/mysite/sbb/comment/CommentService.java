@@ -84,6 +84,7 @@ public class CommentService {
                .seq(0)
                .dep(0)
                .isDeleted(false)
+               .parentName(null)
                .build();
          
           Comment save = commentRepository.save(build);
@@ -198,6 +199,12 @@ public class CommentService {
       
       Integer dep = parentDep+1;
       
+      String parentName = commentDTO.getParentName();
+      
+      if(dep>2) {
+    	  dep = 2;
+      }
+      
         
          Comment build = Comment.builder()
                   .content(commentDTO.getContent())
@@ -209,6 +216,7 @@ public class CommentService {
                   .seq(seq)
                   .dep(dep)
                   .isDeleted(false)
+                  .parentName(parentName)
                   .build();
          
          Comment result = this.commentRepository.save(build);
