@@ -45,6 +45,8 @@ public class CommentDTO {
 	private Integer parentId;
 	
 	private Boolean isDeleted;
+	
+	private String parentName;
    
    
 
