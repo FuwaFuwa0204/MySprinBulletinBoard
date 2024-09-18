@@ -7,7 +7,7 @@
 
 ## 프로젝트 개요
     1. 프로젝트 이름 : FUWAFUWA FANMADE T1 CALENDAR
-    2. 배포 주소 : https://fuwafuwacal.site
+    2. 배포 주소 : https://fuwafuwacal.site (현재 서버를 종료하였습니다.)
     3. 프로젝트 개발 기간 : 2024.03.26 ~ 2024.07.29    
 
 
